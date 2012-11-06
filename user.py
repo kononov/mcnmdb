@@ -4,7 +4,7 @@ from datetime import datetime
 
 from werkzeug import cached_property
 
-from mcnmadmin.db import db
+from .db import db
 from mcnmadmin.uploads import uploaded_avatars
 
 from base import BaseMixin

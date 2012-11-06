@@ -6,7 +6,7 @@ from sqlalchemy.ext.declarative import declared_attr
 from sqlalchemy.orm import object_mapper
 from sqlalchemy.orm.session import object_session
 
-from mcnmadmin.db import db
+from .db import db
 
 def save_model(model):
     db.session.add(model)

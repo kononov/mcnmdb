@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 from datetime import datetime
 
-from mcnmadmin.db import db
+from .db import db
 from base import BaseMixin
 
 
