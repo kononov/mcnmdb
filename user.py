@@ -7,6 +7,11 @@ from werkzeug import cached_property
 from .db import db
 #from mcnmadmin.uploads import uploaded_avatars
 
+from .settings import UserSettings
+from .shoplist import ShoppingList
+from .offer import Offer
+from .store import Store
+
 from base import BaseMixin
 
 from flask.ext.security import UserMixin, RoleMixin
