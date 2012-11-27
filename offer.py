@@ -36,5 +36,8 @@ class Offer(db.Model, BaseMixin):
         return "<%s>" % self
 
 
-class OfferPhoto(db.Model, BaseMixin):
-    __tablename__ = 'offer_photos'
+class OfferPicture(db.Model, BaseMixin):
+    __tablename__ = 'offer_pictures'
+
+    offer_id = db.Column(db.Integer, db.ForeignKey('stores.id')) # id магазина
+    url      = db.Column(db.UnicodeText) # Адрес фото

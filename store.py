@@ -1,9 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-from datetime import datetime
-
 from .db import db
 from base import BaseMixin
+
 
 class Corporation(db.Model, BaseMixin):
     __tablename__ = 'corporations'
@@ -56,3 +55,10 @@ class Store(db.Model, BaseMixin):
 
     def __repr__(self):
         return "<%s>" % self
+
+
+class StorePicture(db.Model, BaseMixin):
+    __tablename__ = 'store_pictures'
+
+    store_id = db.Column(db.Integer, db.ForeignKey('stores.id')) # id магазина
+    url      = db.Column(db.UnicodeText) # Адрес фото
