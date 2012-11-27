@@ -17,7 +17,8 @@ class Corporation(db.Model, BaseMixin):
     subdomain   = db.Column(db.String(255))  # Поддомен, если задан то личный кабинет парнера доступен по адресу <subdomain>.myconomy.ru
 
     user_id        = db.Column(db.Integer, db.ForeignKey('users.id')) # id пользователя, кто добавил сеть
-    stores      = db.relationship('Store', backref=db.backref('corporation'))
+    stores      = db.relationship('Store',
+        backref=db.backref('corporation', lazy='dynamic'))
 
     def __str__(self):
         ctx = (str(self.id), self.name)
@@ -47,7 +48,8 @@ class Store(db.Model, BaseMixin):
     onlineonly     = db.Column(db.Boolean, default=False) # True - только онлайн, False - обычный розничный магаз (по умолчанию)
 
     # список всех предложения этого магазина
-    offers         = db.relationship('Offer', backref=db.backref('store'))
+    offers         = db.relationship('Offer',
+        backref=db.backref('store', lazy='dynamic'))
 
     def __str__(self):
         ctx = (str(self.id), self.name)

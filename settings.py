@@ -38,7 +38,8 @@ class UserOption(db.Model, BaseMixin):
     description = db.Column(db.String(1000))
 
     # настройки пользователя
-    settings    = db.relationship('UserSettings', backref=db.backref('option')) 
+    settings    = db.relationship('UserSettings',
+        backref=db.backref('option', lazy='dynamic')) 
 
     def __str__(self):
         ctx = (str(self.id), self.name)
@@ -53,7 +54,8 @@ class ListOption(db.Model, BaseMixin):
     description = db.Column(db.String(1000))
 
     # настройки списка
-    settings    = db.relationship('ShoppingListSettings', backref=db.backref('option'))
+    settings    = db.relationship('ShoppingListSettings',
+        backref=db.backref('option', lazy='dynamic'))
 
     def __str__(self):
         ctx = (str(self.id), self.name)
