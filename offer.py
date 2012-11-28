@@ -25,9 +25,7 @@ class Offer(db.Model, BaseMixin):
     logo          = db.Column(db.String(1000))  # ссылка на лого (актуально для спец. предложений)
     oldprice      = db.Column(db.Float)  # стоимость предложения, например "234.70" (актуально для спец. предложений)
 
-    items         = db.relationship('ShoppingListItem',
-        backref=db.backref('offer'))
-
+    items         = db.relationship('ShoppingListItem', backref=db.backref('offer'))
     datefinish    = db.Column(db.DateTime)  # дата-время окончания действия предложения
 
     def __str__(self):

@@ -29,12 +29,10 @@ class ShoppingList(db.Model, BaseMixin):
     user_id     = db.Column(db.Integer, db.ForeignKey('users.id'))
 
     # список всех позиций в этом списке
-    items       = db.relationship('ShoppingListItem',
-        backref=db.backref('list', lazy='dynamic'))
-
+    items       = db.relationship('ShoppingListItem', backref=db.backref('list'))
+ 
     # настройки списка
-    settings    = db.relationship('ShoppingListSettings',
-        backref=db.backref('list', lazy='dynamic'))
+    settings    = db.relationship('ShoppingListSettings', backref=db.backref('list')) 
 
     def __str__(self):
         ctx = (str(self.id), self.name, self.user_id)
