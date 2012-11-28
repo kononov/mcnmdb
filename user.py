@@ -5,7 +5,7 @@ from datetime import datetime
 from werkzeug import cached_property
 
 from .db import db
-#from mcnmadmin.uploads import uploaded_avatars
+from ..uploads import uploaded_avatars
 
 from .settings import UserSettings
 from .shoplist import ShoppingList
@@ -138,7 +138,7 @@ class User(db.Model, UserMixin, BaseMixin):
 
     @cached_property
     def avatar_url(self):
-        #return uploaded_avatars.url(self.avatar)
+        return uploaded_avatars.url(self.avatar)
         return
 
     @cached_property
