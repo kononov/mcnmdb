@@ -139,7 +139,6 @@ class User(db.Model, UserMixin, BaseMixin):
     @cached_property
     def avatar_url(self):
         return uploaded_avatars.url(self.avatar)
-        return
 
     @cached_property
     def natural_roles(self):
