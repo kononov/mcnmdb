@@ -5,7 +5,6 @@ from datetime import datetime
 from .db import db
 from base import BaseMixin
 
-
 class Offer(db.Model, BaseMixin):
     __tablename__ = 'offers'
 
@@ -14,7 +13,7 @@ class Offer(db.Model, BaseMixin):
     store_id      = db.Column(db.Integer, db.ForeignKey('stores.id'))  # id магазина, чье предложение
     price         = db.Column(db.Float)  # стоимость предложения, например "1234.70"
 
-    measure       = db.Column(db.Integer)  # тип едницы товара
+    measure_id    = db.Column(db.Integer, db.ForeignKey('measures.id')) # id типа едницы товара
     user_id       = db.Column(db.Integer, db.ForeignKey('users.id'))  # id пользователя, кто добавил предложение
     type          = db.Column(db.Integer)  # тип предложения 0-обычное, 1-спец предложение
 
@@ -26,7 +25,9 @@ class Offer(db.Model, BaseMixin):
     oldprice      = db.Column(db.Float)  # стоимость предложения, например "234.70" (актуально для спец. предложений)
 
     items         = db.relationship('ShoppingListItem', backref=db.backref('offer'))
-    datefinish    = db.Column(db.DateTime)  # дата-время окончания действия предложения
+    datefinish    = db.Column(db.DateTime, nullable=False)  # дата-время окончания действия предложения
+
+    taskitem_id = db.Column(db.Integer, db.ForeignKey('task_items.id')) # id элемента задачи если это была пакетная загрузка
 
     def __str__(self):
         ctx = (str(self.id), self.name)
@@ -35,6 +36,9 @@ class Offer(db.Model, BaseMixin):
     def __repr__(self):
         return "<%s>" % self
 
+class Measure(db.Model, BaseMixin):
+    __tablename__ = 'measures'
+    description   = db.Column(db.String(1000))  # Описание
 
 class OfferPicture(db.Model, BaseMixin):
     __tablename__ = 'offer_pictures'

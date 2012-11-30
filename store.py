@@ -16,8 +16,10 @@ class Corporation(db.Model, BaseMixin):
     account     = db.Column(db.String(255))  # Расчетный счет
     subdomain   = db.Column(db.String(255))  # Поддомен, если задан то личный кабинет парнера доступен по адресу <subdomain>.myconomy.ru
 
-    user_id        = db.Column(db.Integer, db.ForeignKey('users.id')) # id пользователя, кто добавил сеть
+    user_id     = db.Column(db.Integer, db.ForeignKey('users.id')) # id пользователя, кто добавил сеть
     stores      = db.relationship('Store', backref=db.backref('corporation'))
+
+
 
     def __str__(self):
         ctx = (str(self.id), self.name)
@@ -41,10 +43,12 @@ class Store(db.Model, BaseMixin):
     lat            = db.Column(db.Float()) # широта
     lng            = db.Column(db.Float()) # долгота
     user_id        = db.Column(db.Integer, db.ForeignKey('users.id')) # id пользователя, кто добавил магазин
-    subdomain   = db.Column(db.String(255))  # Поддомен, если задан то личный кабинет парнера доступен по адресу <subdomain>.myconomy.ru
+    subdomain      = db.Column(db.String(255))  # Поддомен, если задан то личный кабинет парнера доступен по адресу <subdomain>.myconomy.ru
 
     delivery       = db.Column(db.Boolean, default=False) # True - есть доставка, False - нет доставки (по умолчанию)
     onlineonly     = db.Column(db.Boolean, default=False) # True - только онлайн, False - обычный розничный магаз (по умолчанию)
+
+    taskitem_id = db.Column(db.Integer, db.ForeignKey('task_items.id')) # id элемента задачи если это была пакетная загрузка
 
     # список всех предложения этого магазина
     offers         = db.relationship('Offer', backref=db.backref('store'))

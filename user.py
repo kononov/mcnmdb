@@ -83,7 +83,7 @@ class User(db.Model, UserMixin, BaseMixin):
     settings         = db.relationship('UserSettings', backref=db.backref('user'))
 
     # список всех ролей данного пользователя
-    roles            = db.relationship('Role', secondary=roles_users, backref = db.backref('users_with_this_role', lazy='dynamic'))
+    roles            = db.relationship('Role', secondary=roles_users, backref = db.backref('users_with_this_role'))
     # список всех групп куда входит этот пользователь ролей
     groups           = db.relationship('Group', secondary=groups_users, backref = db.backref('users_in_this_group'))
     # список всех списков покупок у этого пользователя
