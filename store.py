@@ -5,20 +5,23 @@ from base import BaseMixin
 
 
 class Corporation(db.Model, BaseMixin):
+    """
+    Таблица сетей магазинов
+    """
+
     __tablename__ = 'corporations'
 
-    name        = db.Column(db.String(255), nullable=False) # Название ЮЛ, пример "ОАО Ромашка"
-    description = db.Column(db.String(1000)) # Описание ЮЛ
-    president   = db.Column(db.String(255))  # Директор
-    INN         = db.Column(db.String(255))  # ИНН
-    KPP         = db.Column(db.String(255))  # КПП
-    bank        = db.Column(db.String(255))  # Банк
-    account     = db.Column(db.String(255))  # Расчетный счет
+    name        = db.Column(db.Unicode(), nullable=False) # Название ЮЛ, пример "ОАО Ромашка"
+    description = db.Column(db.Unicode())  # Описание ЮЛ
+    president   = db.Column(db.Unicode())  # Директор
+    INN         = db.Column(db.Unicode())  # ИНН
+    KPP         = db.Column(db.Unicode())  # КПП
+    bank        = db.Column(db.Unicode())  # Банк
+    account     = db.Column(db.Unicode())  # Расчетный счет
     subdomain   = db.Column(db.String(255))  # Поддомен, если задан то личный кабинет парнера доступен по адресу <subdomain>.myconomy.ru
 
     user_id     = db.Column(db.Integer, db.ForeignKey('users.id')) # id пользователя, кто добавил сеть
     stores      = db.relationship('Store', backref=db.backref('corporation'))
-
 
 
     def __str__(self):
@@ -30,6 +33,10 @@ class Corporation(db.Model, BaseMixin):
 
 
 class Store(db.Model, BaseMixin):
+    """
+    Таблица магазинов
+    """
+
     __tablename__ = 'stores'
 
     name           = db.Column(db.String(255), nullable=False) # Название, пример "Перекресток"
@@ -60,8 +67,33 @@ class Store(db.Model, BaseMixin):
     def __repr__(self):
         return "<%s>" % self
 
+groups_users = db.Table('groups_stores',
+    db.Column('store_id', db.Integer(), db.ForeignKey('stores.id')),
+    db.Column('group_id', db.Integer(), db.ForeignKey('storegroups.id')))
+
+
+class StoreGroup(db.Model, BaseMixin):
+    """
+    Таблица групп магазинов
+    """
+
+    __tablename__ = 'storegroups'
+
+    name        = db.Column(db.Unicode(), nullable=False, unique=True)
+    description = db.Column(db.Unicode())
+
+    def __str__(self):
+        ctx = (str(self.id), self.name)
+        return '<Store group id=%s, name=%s>' % ctx
+
+    def __repr__(self):
+        return "<%s>" % self
+
 
 class StorePicture(db.Model, BaseMixin):
+    """
+    Таблица изображений магазинов
+    """
     __tablename__ = 'store_pictures'
 
     store_id = db.Column(db.Integer, db.ForeignKey('stores.id')) # id магазина
