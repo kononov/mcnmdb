@@ -7,11 +7,6 @@ from werkzeug import cached_property
 from .db import db
 from ..uploads import uploaded_avatars
 
-from .settings import UserSettings
-from .shoplist import ShoppingList
-from .offer import Offer
-from .store import Store
-
 from base import BaseMixin
 
 from flask.ext.security import UserMixin, RoleMixin
@@ -29,11 +24,15 @@ roles_groups = db.Table('roles_groups',
     db.Column('user_id', db.Integer(), db.ForeignKey('users.id')),
     db.Column('group_id', db.Integer(), db.ForeignKey('groups.id')))
 
-class Role(db.Model, RoleMixin, BaseMixin):
-    __tablename__ = 'roles'
 
+class Role(db.Model, RoleMixin, BaseMixin):
+    """
+    Таблица ролей пользоватлей
+    """
+
+    __tablename__ = 'roles'
     name        = db.Column(db.String(80), nullable=False, unique=True)
-    description = db.Column(db.String(1000))
+    description = db.Column(db.Unicode(1000))
 
     def __str__(self):
         ctx = (str(self.id), self.name)
@@ -42,11 +41,15 @@ class Role(db.Model, RoleMixin, BaseMixin):
     def __repr__(self):
         return "<%s>" % self
 
-class Group(db.Model, BaseMixin):
-    __tablename__ = 'groups'
 
+class Group(db.Model, BaseMixin):
+    """
+    Таблица групп пользователей
+    """
+
+    __tablename__ = 'groups'
     name        = db.Column(db.String(80), nullable=False, unique=True)
-    description = db.Column(db.String(1000))
+    description = db.Column(db.Unicode(1000))
 
     roles       = db.relationship('Group', secondary=roles_groups, backref = db.backref('groups_with_this_role'))
 
@@ -59,8 +62,11 @@ class Group(db.Model, BaseMixin):
 
 
 class User(db.Model, UserMixin, BaseMixin):
-    __tablename__ = 'users'
+    """
+    Таблица пользоватлей
+    """
 
+    __tablename__ = 'users'
     username         = db.Column(db.String(255))
     first_name       = db.Column(db.String(255))
     last_name        = db.Column(db.String(255))
@@ -138,7 +144,12 @@ class User(db.Model, UserMixin, BaseMixin):
     def __repr__(self):
         return "<%s>" % self
 
+
 class UserFavouriteStore(db.Model, BaseMixin):
+    """
+    Таблица избранных магазинов для пользователя
+    """
+
     __tablename__ = 'favourite_stores'
     user_id  = db.Column(db.Integer(), db.ForeignKey('users.id'))  # id пользователя, кто добавил предложение
     store_id = db.Column(db.Integer(), db.ForeignKey('stores.id')) # id магазина

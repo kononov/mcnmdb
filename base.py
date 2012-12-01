@@ -38,22 +38,54 @@ class UpdateMixin(object):
             if hasattr(self, k):
                 setattr(self, k, kw[k])
 
+
 class IdMixin(object):
     """
-    Provides the :attrs:`id` primary key column
-    """
-    id = db.Column(db.Integer(), primary_key=True) # уникальный идентификатор
-
-class TimestampMixin(object):
-    """Adds automatically updated created_at and updated_at timestamp
-    columns to a table, that unsurprisingly are updated on record INSERT and
-    UPDATE. UTC time is used in both cases.
+    Абстрактная примесь которая добавляет в другие модели id - первичный ключ
     """
 
-    created_at = db.Column(db.DateTime, default=datetime.utcnow, nullable=False) # дата-время добавления записи
-    updated_at = db.Column(db.DateTime, onupdate=datetime.utcnow, default=datetime.utcnow) # дата-время обновления записи
+    id = db.Column(db.Integer(), autoincrement=True, primary_key=True)
 
-class BaseMixin(IdMixin, UpdateMixin, TimestampMixin):
+    @classmethod
+    def by_id(cls, id) :
+        return db.query(cls).filter_by(id = id).first()
+
+
+
+class CreatedMixin(object):
+    """Абстрактная примесь которая добавляет в другие модели поля:
+        created_by - кто создал
+        updated_by - последний кто обновил
+        created_at - дата создания
+        updated_at - дата последнего обновления
+    Поля заполняются автоматически. Кто создал и обновил ссылаются на модель User.
+    """
+
+    @declared_attr
+    def created_by(cls):
+        return db.Column(db.Integer, db.ForeignKey('users.id',
+                      onupdate="cascade", ondelete="restrict"))
+
+    @declared_attr
+    def updated_by(cls):
+        return db.Column(db.Integer, db.ForeignKey('users.id',
+                      onupdate="cascade", ondelete="restrict"))
+
+
+    # дата-время добавления записи
+    created_at = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
+    # дата-время обновления записи
+    updated_at = db.Column(db.DateTime, onupdate=datetime.utcnow, default=datetime.utcnow)
+
+    @declared_attr
+    def __table_args__(cls):
+        return (
+                 db.Index("idx_%s_created_by" % cls.__tablename__.lower(), "created_by"),
+                 db.Index("idx_%s_updated_by" % cls.__tablename__.lower(), "updated_by"),
+               )
+
+
+class BaseMixin(IdMixin, UpdateMixin, CreatedMixin):
     """Provieds all benefits of
     providing a deform compatible appstruct property and an easy way to
     query VersionedMeta. It also defines an id column to save on boring
