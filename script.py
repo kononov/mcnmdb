@@ -3,8 +3,9 @@
 
 from . import *
 from flask.ext.script import Command, prompt_bool
-from fixtures import data
-
+from fixtures import data, user
+from flask.ext.security.utils import encrypt_password
+from datetime import datetime
 
 class CreateAllCommand(Command):
     """
@@ -127,3 +128,14 @@ class CreateFixturesCommand(Command):
             f_measures.append(Measure(id=measure[0], description=measure[1]))
             print 'Measure "%s" created successfully.' % measure[1]
         save_models(f_measures)
+
+        # Создаем пользователей
+        f_user = []
+        for u in user.users:
+            roles = []
+            for role in u[2]:
+                role = Role.query.filter_by(name=role).first()
+                roles.append(role)
+            f_user.append(User(email=u[0], password=encrypt_password(u[1]), roles=roles, active=u[3], confirmed_at=datetime.utcnow()))
+            print 'User "%s" created successfully.' % u[0]
+        save_models(f_user)
