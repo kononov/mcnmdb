@@ -1,3 +1,6 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
 # Роли полезователей
 user_roles = (
                (u'superadmin'), # администратор myconomy
