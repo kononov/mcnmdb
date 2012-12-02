@@ -86,20 +86,13 @@ class User(db.Model, UserMixin, BaseMixin):
     city             = db.Column(db.String(255))
 
     # настройки пользователя
-    settings         = db.relationship('UserSettings', backref=db.backref('user'))
-
+    settings         = db.relationship('UserSettings', primaryjoin="UserSettings.user_id==User.id", backref=db.backref('user'))
     # список всех ролей данного пользователя
     roles            = db.relationship('Role', secondary=roles_users, backref = db.backref('users_with_this_role'))
     # список всех групп куда входит этот пользователь ролей
     groups           = db.relationship('Group', secondary=groups_users, backref = db.backref('users_in_this_group'))
     # список всех списков покупок у этого пользователя
-    lists            = db.relationship('ShoppingList', backref=db.backref('user'))
-    # список всех предложения, созданых пользователем
-    offers           = db.relationship('Offer', backref=db.backref('who_add'))
-    # список всех магазинов, созданых пользователем
-    stores           = db.relationship('Store', backref=db.backref('who_add'))
-    # список всех corporation, созданых пользователем
-    corporations     = db.relationship('Corporation', backref=db.backref('who_add'))
+    lists            = db.relationship('ShoppingList', primaryjoin="ShoppingList.user_id==User.id", backref=db.backref('user'))
 
     confirmed_at     = db.Column(db.DateTime())
     last_login_at    = db.Column(db.DateTime)
@@ -153,4 +146,3 @@ class UserFavouriteStore(db.Model, BaseMixin):
     __tablename__ = 'favourite_stores'
     user_id  = db.Column(db.Integer(), db.ForeignKey('users.id'))  # id пользователя, кто добавил предложение
     store_id = db.Column(db.Integer(), db.ForeignKey('stores.id')) # id магазина
-
