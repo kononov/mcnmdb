@@ -9,7 +9,7 @@ from fixtures.data import ( user_roles, user_options, list_options, transactions
                             store_states, task_states, taskitem_states, task_types )
 
 
-class CreateAllDb(Command):
+class CreateAllCommand(Command):
     """
     Creates database tables
     """
@@ -18,7 +18,7 @@ class CreateAllDb(Command):
         db.create_all()
 
 
-class DropAllDb(Command):
+class DropAllCommand(Command):
     """
     Drops all database tables
     """
@@ -27,7 +27,7 @@ class DropAllDb(Command):
         if prompt_bool("Are you sure ? You will lose all your data !"):
             db.drop_all()
 
-class CreateFixtures(Command):
+class CreateFixturesCommand(Command):
     """
     Создание тестовых данных
     """
