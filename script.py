@@ -3,9 +3,9 @@
 
 from . import *
 from flask.ext.script import Command, prompt_bool
-from fixtures import data, user, f_store
+from fixtures import data, user, f_store, f_offer
 from flask.ext.security.utils import encrypt_password
-from datetime import datetime
+import datetime
 
 class CreateAllCommand(Command):
     """
@@ -136,7 +136,7 @@ class CreateFixturesCommand(Command):
             for role in u[2]:
                 role = Role.query.filter_by(name=role).first()
                 roles.append(role)
-            f_user.append(User(email=u[0], password=encrypt_password(u[1]), roles=roles, active=u[3], confirmed_at=datetime.utcnow()))
+            f_user.append(User(email=u[0], password=encrypt_password(u[1]), roles=roles, active=u[3], confirmed_at=datetime.datetime.utcnow()))
             print 'User "%s" created successfully.' % u[0]
         save_models(f_user)
 
@@ -155,3 +155,9 @@ class CreateFixturesCommand(Command):
             print 'Store "%s" created successfully.' % store[0]
         save_models(f_stores)
 
+        # Создаем предложения
+        f_offers = []
+        for offer in f_offer.offers:
+            f_offers.append(Offer(name=offer[0], description=offer[1], type=offer[2], price=offer[3], measure_id=offer[4], store_id=1, datefinish=datetime.date(2012, 12, 31)))
+            print 'Offer "%s" created successfully.' % offer[0]
+        save_models(f_offers)
