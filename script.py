@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-from .db import db
+
 from . import *
 from flask.ext.script import Command, prompt_bool
 
@@ -14,8 +14,11 @@ class CreateAllCommand(Command):
     Creates database tables
     """
 
+    def __init__(self, db):
+        self.db = db
+
     def run(self, **kwargs):
-        db.create_all()
+        self.db.create_all()
 
 
 class DropAllCommand(Command):
@@ -23,14 +26,21 @@ class DropAllCommand(Command):
     Drops all database tables
     """
 
+    def __init__(self, db):
+        self.db = db
+
     def run(self, **kwargs):
         if prompt_bool("Are you sure ? You will lose all your data !"):
-            db.drop_all()
+            self.db.drop_all()
+
 
 class CreateFixturesCommand(Command):
     """
     Создание тестовых данных
     """
+
+    def __init__(self, db):
+        self.db = db
 
     def run(self, **kwargs):
 
