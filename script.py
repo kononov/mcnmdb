@@ -3,7 +3,7 @@
 
 from . import *
 from flask.ext.script import Command, prompt_bool
-from fixtures import data, user, store
+from fixtures import data, user, f_store
 from flask.ext.security.utils import encrypt_password
 from datetime import datetime
 
@@ -143,15 +143,15 @@ class CreateFixturesCommand(Command):
 
         # Создаем юр. лица
         f_corporations = []
-        for corp in store.corporations:
+        for corp in f_store.corporations:
             f_corporations.append(Corporation(name=corp[0],description=corp[1]))
             print 'Corporation "%s" created successfully.' % corp[0]
         save_models(f_corporations)
 
         # Создаем магазины
         f_stores = []
-        for store in store.stores:
-            f_stores.append(Store(name=store[0], open_time=store[1], close_time=store[2], metro=store[3], phone=store[4], address=store[5], corporation_id=1))
+        for store in f_store.stores:
+            f_stores.append(Store(name=store[0], open_time=store[1], close_time=store[2], metro=store[3], phone=store[4], city=store[5], address=store[6], corporation_id=1))
             print 'Store "%s" created successfully.' % store[0]
         save_models(f_stores)
 
