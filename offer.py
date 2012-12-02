@@ -18,8 +18,8 @@ class Offer(db.Model, BaseMixin, ByMixin):
 
     __tablename__ = 'offers'
 
-    name             = db.Column(db.String(255), nullable=False)  # Название предлоджения, пример "Колбаса Охотничья"
-    description      = db.Column(db.String(1000))  # Описание акции
+    name             = db.Column(db.Unicode(100), nullable=False)  # Название предлоджения, пример "Колбаса Охотничья"
+    description      = db.Column(db.Unicode(1000))  # Описание акции
     store_id         = db.Column(db.Integer, db.ForeignKey('stores.id'))  # id магазина, чье предложение
     price            = db.Column(db.Numeric(10,2))  # стоимость предложения, например "1234.70"
 

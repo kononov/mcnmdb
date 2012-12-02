@@ -41,14 +41,16 @@ class Store(db.Model, BaseMixin, ByMixin):
     """
 
     __tablename__ = 'stores'
-    name           = db.Column(db.String(255), nullable=False) # Название, пример "Перекресток"
-    description    = db.Column(db.String(1000)) # Описание магазина
+    name           = db.Column(db.Unicode(1000), nullable=False) # Название, пример "Перекресток"
+    description    = db.Column(db.Unicode(1000)) # Описание магазина
     corporation_id = db.Column(db.Integer, db.ForeignKey('corporations.id')) # id ЮЛ
-    city           = db.Column(db.String(255), nullable=False) # Город, пример "Москва", выбирается из списка известных городов
-    region         = db.Column(db.String(255)) # Район города, пример "ЦАО", , выбирается из списка известных районов/округов
-    metro          = db.Column(db.String(255)) # Ближайшее метро, пример "Арбатская", выбирается из списка известных станций метро
-    address        = db.Column(db.String(1000)) # Адрес, пример "ул. Бутырская, д. 20", выбирается из списка известных адресов, типа ФИАС http://fias.nalog.ru/Public/DownloadPage.aspx
-    phone          = db.Column(db.String(255)) # Телефон, пример "+7(495)123-34-45"
+    city           = db.Column(db.Unicode(1000), nullable=False) # Город, пример "Москва", выбирается из списка известных городов
+    region         = db.Column(db.Unicode(1000)) # Район города, пример "ЦАО", , выбирается из списка известных районов/округов
+    metro          = db.Column(db.Unicode(1000)) # Ближайшее метро, пример "Арбатская", выбирается из списка известных станций метро
+    address        = db.Column(db.Unicode(1000)) # Адрес, пример "ул. Бутырская, д. 20", выбирается из списка известных адресов, типа ФИАС http://fias.nalog.ru/Public/DownloadPage.aspx
+    phone          = db.Column(db.Unicode(200)) # Телефон, пример "+7(495)123-34-45"
+    open_time      = db.Column(db.String(25))
+    close_time     = db.Column(db.String(25))
     lat            = db.Column(db.Float()) # координата: широта
     lng            = db.Column(db.Float()) # координата: долгота
 
