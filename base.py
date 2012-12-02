@@ -53,12 +53,22 @@ class IdMixin(object):
 
 
 
-class CreatedMixin(object):
+class TimesMixin(object):
+    """Абстрактная примесь которая добавляет в другие модели поля:
+        created_at - дата создания
+        updated_at - дата последнего обновления
+    """
+
+    # дата-время добавления записи
+    created_at = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
+    # дата-время обновления записи
+    updated_at = db.Column(db.DateTime, onupdate=datetime.utcnow, default=datetime.utcnow)
+
+
+class ByMixin(object):
     """Абстрактная примесь которая добавляет в другие модели поля:
         created_by - кто создал
         updated_by - последний кто обновил
-        created_at - дата создания
-        updated_at - дата последнего обновления
     Поля заполняются автоматически. Кто создал и обновил ссылаются на модель User.
     """
 
@@ -73,11 +83,6 @@ class CreatedMixin(object):
                       onupdate="cascade", ondelete="restrict"))
 
 
-    # дата-время добавления записи
-    created_at = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
-    # дата-время обновления записи
-    updated_at = db.Column(db.DateTime, onupdate=datetime.utcnow, default=datetime.utcnow)
-
     @declared_attr
     def __table_args__(cls):
         return (
@@ -86,7 +91,7 @@ class CreatedMixin(object):
                )
 
 
-class BaseMixin(IdMixin, UpdateMixin, CreatedMixin):
+class BaseMixin(IdMixin, UpdateMixin, TimesMixin):
     """Provieds all benefits of
     providing a deform compatible appstruct property and an easy way to
     query VersionedMeta. It also defines an id column to save on boring

@@ -4,10 +4,10 @@ from datetime import datetime
 
 from werkzeug import cached_property
 
-from .db import db
+from .db import sa as db
 from ..uploads import uploaded_avatars
 
-from base import BaseMixin
+from base import BaseMixin, ByMixin
 
 from flask.ext.security import UserMixin, RoleMixin
 

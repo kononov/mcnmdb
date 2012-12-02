@@ -2,10 +2,10 @@
 # -*- coding: utf-8 -*-
 from datetime import datetime
 
-from .db import db
-from base import BaseMixin
+from .db import sa as db
+from base import BaseMixin, ByMixin
 
-class ShoppingListItem(db.Model, BaseMixin):
+class ShoppingListItem(db.Model, BaseMixin, ByMixin):
     __tablename__ = 'list_items'
 
     list_id   = db.Column(db.Integer, db.ForeignKey('lists.id'))
@@ -26,7 +26,7 @@ class ShoppingListItem(db.Model, BaseMixin):
     def __repr__(self):
         return "<%s>" % self
 
-class ShoppingList(db.Model, BaseMixin):
+class ShoppingList(db.Model, BaseMixin, ByMixin):
     __tablename__ = 'lists'
 
     name        = db.Column(db.String(255), nullable=False)
@@ -35,9 +35,9 @@ class ShoppingList(db.Model, BaseMixin):
 
     # список всех позиций в этом списке
     items       = db.relationship('ShoppingListItem', backref=db.backref('list'))
- 
+
     # настройки списка
-    settings    = db.relationship('ShoppingListSettings', backref=db.backref('list')) 
+    settings    = db.relationship('ShoppingListSettings', backref=db.backref('list'))
 
     __table_args__ = (
                        db.Index("idx_lists_store_id", "user_id"),

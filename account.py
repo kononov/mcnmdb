@@ -3,7 +3,7 @@
 from datetime import datetime
 
 from .db import db
-from base import BaseMixin
+from base import BaseMixin, ByMixin
 
 
 TRANSACTION_TYPE_UNKNOWN = 0
@@ -23,7 +23,7 @@ TRANSACTION_STATE_DELETE  = 2
 TRANSACTION_STATE_STORN   = 11
 
 
-class Account(db.Model, BaseMixin):
+class Account(db.Model, BaseMixin, ByMixin):
     """
     Таблица счетов для учета средств магазинов
     """
@@ -39,7 +39,7 @@ class Account(db.Model, BaseMixin):
                      )
 
 
-class Transaction(db.Model, BaseMixin):
+class Transaction(db.Model, BaseMixin, ByMixin):
     """
     Таблица траназакций по счетам
     """

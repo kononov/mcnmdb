@@ -2,8 +2,8 @@
 # -*- coding: utf-8 -*-
 from datetime import datetime
 
-from .db import db
-from base import BaseMixin
+from .db import sa as db
+from base import BaseMixin, ByMixin
 
 
 OFFER_STATE_UNKNOWN = 0
@@ -11,7 +11,7 @@ OFFER_STATE_OK      = 1
 OFFER_STATE_DELETE  = 2
 
 
-class Offer(db.Model, BaseMixin):
+class Offer(db.Model, BaseMixin, ByMixin):
     """
     Таблица предложений
     """
@@ -63,7 +63,7 @@ class Measure(db.Model, BaseMixin):
     description   = db.Column(db.String(1000))  # Описание
 
 
-class OfferPicture(db.Model, BaseMixin):
+class OfferPicture(db.Model, BaseMixin, ByMixin):
     """
     Таблица изображений для предложений
     """

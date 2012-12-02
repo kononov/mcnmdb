@@ -2,8 +2,8 @@
 # -*- coding: utf-8 -*-
 from datetime import datetime
 
-from .db import db
-from base import BaseMixin
+from .db import sa as db
+from base import BaseMixin, ByMixin
 
 TASK_TYPE_UNKNOWN    = 0
 TASK_TYPE_OFFER_LOAD = 1
@@ -21,7 +21,7 @@ TASK_ITEM_STATE_OK       = 1
 TASK_ITEM_STATE_ERROR    = 2
 
 
-class Task(db.Model, BaseMixin):
+class Task(db.Model, BaseMixin, ByMixin):
     """
     Таблица заданий
     """
@@ -38,7 +38,7 @@ class Task(db.Model, BaseMixin):
     items = db.relationship('TaskItem', backref=db.backref('task'))
 
 
-class TaskItem(db.Model, BaseMixin):
+class TaskItem(db.Model, BaseMixin, ByMixin):
     """
     Таблица элементов заданий
     """

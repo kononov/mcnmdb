@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-from .db import db
-from base import BaseMixin
+from .db import sa as db
+from base import BaseMixin, ByMixin
 
 
 STORE_STATE_UNKNOWN = 0
@@ -9,7 +9,7 @@ STORE_STATE_OK      = 1
 STORE_STATE_DELETE  = 2
 
 
-class Corporation(db.Model, BaseMixin):
+class Corporation(db.Model, BaseMixin, ByMixin):
     """
     Таблица для ЮЛ магазинов
     """
@@ -35,7 +35,7 @@ class Corporation(db.Model, BaseMixin):
         return "<%s>" % self
 
 
-class Store(db.Model, BaseMixin):
+class Store(db.Model, BaseMixin, ByMixin):
     """
     Таблица магазинов
     """
@@ -80,7 +80,7 @@ groups_users = db.Table('groups_stores',
     db.Column('group_id', db.Integer(), db.ForeignKey('storegroups.id')))
 
 
-class StoreGroup(db.Model, BaseMixin):
+class StoreGroup(db.Model, BaseMixin, ByMixin):
     """
     Таблица групп магазинов
     """
@@ -97,7 +97,7 @@ class StoreGroup(db.Model, BaseMixin):
         return "<%s>" % self
 
 
-class StorePicture(db.Model, BaseMixin):
+class StorePicture(db.Model, BaseMixin, ByMixin):
     """
     Таблица изображений магазинов
     """

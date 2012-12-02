@@ -1,10 +1,10 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-from .db import db
-from base import BaseMixin
+from .db import sa as db
+from base import BaseMixin, ByMixin
 
 
-class AuthUser(db.Model, BaseMixin):
+class AuthUser(db.Model, BaseMixin, ByMixin):
     """
     """
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))  # id пользователя

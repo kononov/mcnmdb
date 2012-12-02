@@ -44,6 +44,9 @@ class CreateFixturesCommand(Command):
 
     def run(self, **kwargs):
 
+        self.db.drop_all()
+        self.db.create_all()
+
         # Заполняем справочник пользовательских опций
         useroptions=[]
         for opt in user_options:
