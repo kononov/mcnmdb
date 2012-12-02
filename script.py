@@ -64,7 +64,8 @@ class CreateFixturesCommand(Command):
         # Создаем роли
         roles = []
         for role in user_roles:
-            roles.append(Role(name=role[0]))
-            print 'Role "%s" created successfully.' % role[0]
+            roles.append(Role(name=role))
+            print 'Role "%s" created successfully.' % role
+
         save_models(roles)
        
