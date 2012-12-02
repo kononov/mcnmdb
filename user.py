@@ -4,7 +4,7 @@ from datetime import datetime
 
 from werkzeug import cached_property
 
-from .db import sa as db
+from .db import db
 from ..uploads import uploaded_avatars
 
 from base import BaseMixin, ByMixin

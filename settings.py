@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 from datetime import datetime
 
-from .db import sa as db
+from .db import db
 from base import BaseMixin, ByMixin
 
 

@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 from datetime import datetime
 
-from .db import sa as db
+from .db import db
 from base import BaseMixin, ByMixin
 
 class ShoppingListItem(db.Model, BaseMixin, ByMixin):
@@ -35,9 +35,9 @@ class ShoppingList(db.Model, BaseMixin, ByMixin):
 
     # список всех позиций в этом списке
     items       = db.relationship('ShoppingListItem', backref=db.backref('list'))
-
+ 
     # настройки списка
-    settings    = db.relationship('ShoppingListSettings', backref=db.backref('list'))
+    settings    = db.relationship('ShoppingListSettings', backref=db.backref('list')) 
 
     __table_args__ = (
                        db.Index("idx_lists_store_id", "user_id"),

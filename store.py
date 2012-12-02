@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-from .db import sa as db
+from .db import db
 from base import BaseMixin, ByMixin
 
 
