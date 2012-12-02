@@ -63,7 +63,7 @@ class TransactionType(db.Model, BaseMixin):
     Таблица типов транзакций
     """
 
-    __tablename__ = 'transactions_types'
+    __tablename__ = 'transaction_types'
     description = db.Column(db.Unicode(1000))
 
 
