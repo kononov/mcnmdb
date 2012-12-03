@@ -16,7 +16,7 @@ class CreateAllCommand(Command):
         self.db = db
 
     def run(self, **kwargs):
-        self.db.create_all()
+        self.db.create_all(bind=[None])
 
 
 class DropAllCommand(Command):
@@ -29,7 +29,7 @@ class DropAllCommand(Command):
 
     def run(self, **kwargs):
         if prompt_bool("Are you sure ? You will lose all your data !"):
-            self.db.drop_all()
+            self.db.drop_all(bind=[None])
 
 
 class CreateFixturesCommand(Command):
@@ -42,8 +42,8 @@ class CreateFixturesCommand(Command):
 
     def run(self, **kwargs):
 
-        self.db.drop_all()
-        self.db.create_all()
+        self.db.drop_all(bind=[None])
+        self.db.create_all(bind=[None])
 
         # Заполняем справочник пользовательских опций
         useroptions=[]
