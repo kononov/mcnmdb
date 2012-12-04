@@ -77,7 +77,7 @@ class Store(db.Model, BaseMixin, ByMixin):
     def __repr__(self):
         return "<%s>" % self
 
-groups_users = db.Table('groups_stores',
+groups_stores = db.Table('groups_stores',
     db.Column('store_id', db.Integer(), db.ForeignKey('stores.id')),
     db.Column('group_id', db.Integer(), db.ForeignKey('storegroups.id')))
 

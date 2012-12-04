@@ -85,6 +85,8 @@ class User(db.Model, UserMixin, BaseMixin):
     country          = db.Column(db.String(255))
     city             = db.Column(db.String(255))
 
+    # ссылка на ЮЛ, только для пользователей с ролью storeadmin !!!
+    corporation_id   = db.Column(db.Integer, db.ForeignKey('corporations.id')) # id ЮЛ
     # настройки пользователя
     settings         = db.relationship('UserSettings', primaryjoin="UserSettings.user_id==User.id", backref=db.backref('user'))
     # список всех ролей данного пользователя
@@ -93,6 +95,8 @@ class User(db.Model, UserMixin, BaseMixin):
     groups           = db.relationship('Group', secondary=groups_users, backref = db.backref('users_in_this_group'))
     # список всех списков покупок у этого пользователя
     lists            = db.relationship('ShoppingList', primaryjoin="ShoppingList.user_id==User.id", backref=db.backref('user'))
+
+
 
     confirmed_at     = db.Column(db.DateTime())
     last_login_at    = db.Column(db.DateTime)
