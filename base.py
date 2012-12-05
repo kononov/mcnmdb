@@ -2,6 +2,9 @@
 # -*- coding: utf-8 -*-
 from datetime import datetime
 
+from colanderalchemy import Column
+from colanderalchemy import relationship
+
 from sqlalchemy import event
 from sqlalchemy.ext.declarative import declared_attr
 from sqlalchemy.orm import object_mapper
@@ -45,7 +48,7 @@ class IdMixin(object):
     Абстрактная примесь которая добавляет в другие модели id - первичный ключ
     """
 
-    id = db.Column(db.Integer(), autoincrement=True, primary_key=True)
+    id = Column(db.Integer(), autoincrement=True, primary_key=True, ca_exclude=True)
 
     @classmethod
     def by_id(cls, id) :
@@ -60,9 +63,9 @@ class TimesMixin(object):
     """
 
     # дата-время добавления записи
-    created_at = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
+    created_at = Column(db.DateTime, default=datetime.utcnow, nullable=False, ca_exclude=True)
     # дата-время обновления записи
-    updated_at = db.Column(db.DateTime, onupdate=datetime.utcnow, default=datetime.utcnow)
+    updated_at = Column(db.DateTime, onupdate=datetime.utcnow, default=datetime.utcnow, ca_exclude=True)
 
 
 class ByMixin(object):
