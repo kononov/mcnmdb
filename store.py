@@ -9,7 +9,8 @@ STORE_STATE_OK      = 1
 STORE_STATE_DELETE  = 2
 
 
-class Corporation(db.Model, BaseMixin, ByMixin):
+#class Corporation(db.Model, BaseMixin, ByMixin):
+class Corporation(db.Model, BaseMixin):
     """
     Таблица для ЮЛ магазинов
     """
