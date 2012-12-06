@@ -41,6 +41,8 @@ class Offer(db.Model, BaseMixin, ByMixin):
 
     taskitem_id      = db.Column(db.Integer, db.ForeignKey('task_items.id')) # id элемента задачи если это была пакетная загрузка
 
+    pictures         = db.relationship('OfferPicture', backref=db.backref('offer'))
+
     __table_args__ = (
                        db.Index("idx_offers_store_id", "store_id"),
                        db.Index("idx_offers_state_id", "state_id"),

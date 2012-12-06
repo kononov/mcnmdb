@@ -26,7 +26,11 @@ class Corporation(db.Model, BaseMixin):
     account     = db.Column(db.Unicode(20))  # Расчетный счет
     subdomain   = db.Column(db.String(255))  # Поддомен, если задан то личный кабинет парнера доступен по адресу <subdomain>.myconomy.ru
 
-    stores      = db.relationship('Store', backref=db.backref('corporation'))
+    # магазины этого ЮрЛица
+    stores      = db.relationship('Store', primaryjoin="Store.corporation_id==Corporation.id", backref=db.backref('corporation'))
+
+    # группы магазинов этого ЮрЛица
+    storegroups = db.relationship('StoreGroup', primaryjoin="StoreGroup.corporation_id==Corporation.id", backref=db.backref('corporation'))
 
     def __str__(self):
         ctx = (str(self.id), self.name)
@@ -56,11 +60,10 @@ class Store(db.Model, BaseMixin, ByMixin):
     lng            = db.Column(db.Float()) # координата: долгота
 
     state_id       = db.Column(db.Integer, db.ForeignKey('store_states.id'))  # id состояния предложения
-
     delivery       = db.Column(db.Boolean, default=False) # True - есть доставка, False - нет доставки (по умолчанию)
     onlineonly     = db.Column(db.Boolean, default=False) # True - только онлайн, False - обычный розничный магаз (по умолчанию)
-
-    taskitem_id = db.Column(db.Integer, db.ForeignKey('task_items.id')) # id элемента задачи если это была пакетная загрузка
+    taskitem_id    = db.Column(db.Integer, db.ForeignKey('task_items.id')) # id элемента задачи если это была пакетная загрузка
+    pictures       = db.relationship('StorePicture')
 
     # список всех предложения этого магазина
     offers         = db.relationship('Offer', backref=db.backref('store'))
