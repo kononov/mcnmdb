@@ -129,6 +129,13 @@ class CreateFixturesCommand(Command):
             print 'Measure "%s" created successfully.' % measure[1]
         save_models(f_measures)
 
+        # Создаем юр. лица
+        f_corporations = []
+        for corp in f_store.corporations:
+            f_corporations.append(Corporation(name=corp[0],description=corp[1]))
+            print 'Corporation "%s" created successfully.' % corp[0]
+        save_models(f_corporations)
+
         # Создаем пользователей
         f_user = []
         for u in user.users:
@@ -136,17 +143,13 @@ class CreateFixturesCommand(Command):
             for role in u[2]:
                 role = Role.query.filter_by(name=role).first()
                 roles.append(role)
-            f_user.append(User(email=u[0], password=encrypt_password(u[1]), roles=roles, active=u[3], confirmed_at=datetime.datetime.utcnow()))
+            corporation = Corporation.query.filter_by(name=u[4]).first()
+            if corporation:
+                f_user.append(User(email=u[0], password=encrypt_password(u[1]), roles=roles, active=u[3], confirmed_at=datetime.datetime.utcnow(), corporation=corporation))
+            else:
+                f_user.append(User(email=u[0], password=encrypt_password(u[1]), roles=roles, active=u[3], confirmed_at=datetime.datetime.utcnow()))
             print 'User "%s" created successfully.' % u[0]
         save_models(f_user)
-
-
-        # Создаем юр. лица
-        f_corporations = []
-        for corp in f_store.corporations:
-            f_corporations.append(Corporation(name=corp[0],description=corp[1]))
-            print 'Corporation "%s" created successfully.' % corp[0]
-        save_models(f_corporations)
 
         # Создаем магазины
         f_stores = []

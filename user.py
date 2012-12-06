@@ -87,6 +87,7 @@ class User(db.Model, UserMixin, BaseMixin):
 
     # ссылка на ЮЛ, только для пользователей с ролью storeadmin !!!
     corporation_id   = db.Column(db.Integer, db.ForeignKey('corporations.id')) # id ЮЛ
+    corporation      = db.relationship('Corporation')
     # настройки пользователя
     settings         = db.relationship('UserSettings', primaryjoin="UserSettings.user_id==User.id", backref=db.backref('user'))
     # список всех ролей данного пользователя
