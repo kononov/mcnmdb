@@ -159,7 +159,7 @@ class CreateFixturesCommand(Command):
         for group in f_store.groups:
             corporation = Corporation.query.filter_by(name=group[2]).first()
             if corporation:
-                f_storegroups.append(StoreGroup(name=group[0],description=group[1]))
+                f_storegroups.append(StoreGroup(name=group[0],description=group[1], corporation=corporation))
                 print 'OK! - StoreGroup "%s" created successfully.' % group[0]
             else:
                 print u'ERROR! - Проверить фикстуры для группы "%s". Невозможно определить ЮрЛицо по названию "%s"!' % (group[0], group[2])
