@@ -24,8 +24,8 @@ class UserSettings(db.Model, BaseMixin):
     user_id     = db.Column(db.Integer, db.ForeignKey('users.id'))
     option_id   = db.Column(db.Integer, db.ForeignKey('user_options.id'))
 
-    intvalue    = db.Column(db.Integer)        # 
-    floatvalue  = db.Column(db.Numeric(10,2))  # 
+    intvalue    = db.Column(db.Integer)        #
+    floatvalue  = db.Column(db.Numeric(10,2))  #
     stringvalue = db.Column(db.String(1000))   #
     datevalue   = db.Column(db.DateTime)       #
     boolvalue   = db.Column(db.Boolean)        #
@@ -40,8 +40,8 @@ class ShoppingListSettings(db.Model, BaseMixin):
     list_id     = db.Column(db.Integer, db.ForeignKey('lists.id'))
     option_id   = db.Column(db.Integer, db.ForeignKey('list_options.id'))
 
-    intvalue    = db.Column(db.Integer)        # 
-    floatvalue  = db.Column(db.Numeric(10,2))  # 
+    intvalue    = db.Column(db.Integer)        #
+    floatvalue  = db.Column(db.Numeric(10,2))  #
     stringvalue = db.Column(db.String(1000))   #
     datevalue   = db.Column(db.DateTime)       #
     boolvalue   = db.Column(db.Boolean)        #
@@ -56,11 +56,10 @@ class UserOption(db.Model, BaseMixin):
     description = db.Column(db.Unicode(1000))
 
     # настройки пользователя
-    settings    = db.relationship('UserSettings', backref=db.backref('option')) 
+    settings    = db.relationship('UserSettings', backref=db.backref('option'))
 
     def __str__(self):
-        ctx = (str(self.id), self.name)
-        return '<Option id=%s, name=%s>' % ctx
+        return self.description
 
     def __repr__(self):
         return "<%s>" % self
@@ -78,8 +77,7 @@ class ListOption(db.Model, BaseMixin):
     settings    = db.relationship('ShoppingListSettings', backref=db.backref('option'))
 
     def __str__(self):
-        ctx = (str(self.id), self.name)
-        return '<Option id=%s, name=%s>' % ctx
+        return self.description
 
     def __repr__(self):
         return "<%s>" % self

@@ -66,6 +66,12 @@ class TransactionType(db.Model, BaseMixin):
     __tablename__ = 'transaction_types'
     description = db.Column(db.Unicode(1000))
 
+    def __str__(self):
+        return self.description
+
+    def __repr__(self):
+        return "<%s>" % self
+
 
 class AccountState(db.Model, BaseMixin):
     """
@@ -74,6 +80,12 @@ class AccountState(db.Model, BaseMixin):
 
     __tablename__ = 'account_states'
     description = db.Column(db.Unicode(1000))  # Описание состояния счета
+
+    def __str__(self):
+        return self.description
+
+    def __repr__(self):
+        return "<%s>" % self
 
 
 class TransactionState(db.Model, BaseMixin):
@@ -84,3 +96,8 @@ class TransactionState(db.Model, BaseMixin):
     __tablename__ = 'transaction_states'
     description = db.Column(db.Unicode(1000))  # Описание состояния транзакции
 
+    def __str__(self):
+        return self.description
+
+    def __repr__(self):
+        return "<%s>" % self

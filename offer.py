@@ -23,7 +23,6 @@ class Offer(db.Model, BaseMixin, ByMixin):
     store_id         = db.Column(db.Integer, db.ForeignKey('stores.id'))  # id магазина, чье предложение
     price            = db.Column(db.Numeric(10,2))  # стоимость предложения, например "1234.70"
 
-    measure_id       = db.Column(db.Integer, db.ForeignKey('measures.id')) # id типа едницы товара
     measure          = db.relationship("Measure")
 
     type             = db.Column(db.Integer)  # тип предложения 0-обычное, 1-спец предложение
@@ -65,6 +64,12 @@ class Measure(db.Model, BaseMixin):
     __tablename__ = 'measures'
     description   = db.Column(db.String(1000))  # Описание
 
+    def __str__(self):
+        return self.description
+
+    def __repr__(self):
+        return "<%s>" % self
+
 
 class OfferPicture(db.Model, BaseMixin, ByMixin):
     """
@@ -85,3 +90,9 @@ class OfferState(db.Model, BaseMixin):
 
     __tablename__ = 'offer_states'
     description = db.Column(db.Unicode(1000))  # Описание состояния транзакции
+
+    def __str__(self):
+        return self.description
+
+    def __repr__(self):
+        return "<%s>" % self

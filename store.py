@@ -108,6 +108,7 @@ class StorePicture(db.Model, BaseMixin, ByMixin):
     """
     Таблица изображений магазинов
     """
+
     __tablename__ = 'store_pictures'
     store_id = db.Column(db.Integer, db.ForeignKey('stores.id')) # id магазина
     url      = db.Column(db.UnicodeText) # Адрес фото
@@ -120,3 +121,9 @@ class StoreState(db.Model, BaseMixin):
 
     __tablename__ = 'store_states'
     description = db.Column(db.Unicode(1000))  # Описание состояния транзакции
+
+    def __str__(self):
+        return self.description
+
+    def __repr__(self):
+        return "<%s>" % self

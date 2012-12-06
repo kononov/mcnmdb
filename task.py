@@ -59,6 +59,12 @@ class TaskState(db.Model, BaseMixin):
     __tablename__ = 'task_states'
     description = db.Column(db.Unicode(1000))  # Описание состояния задачи
 
+    def __str__(self):
+        return self.description
+
+    def __repr__(self):
+        return "<%s>" % self
+
 
 class TaskItemState(db.Model, BaseMixin):
     """
@@ -67,6 +73,12 @@ class TaskItemState(db.Model, BaseMixin):
 
     __tablename__ = 'taskitem_states'
     description = db.Column(db.Unicode(1000))  # Описание состояния элемента задачи
+
+    def __str__(self):
+        return self.description
+
+    def __repr__(self):
+        return "<%s>" % self
 
 
 class TaskType(db.Model, BaseMixin):
@@ -77,3 +89,8 @@ class TaskType(db.Model, BaseMixin):
     __tablename__ = 'task_types'
     description = db.Column(db.Unicode(1000))  # Описание типа задачи
 
+    def __str__(self):
+        return self.description
+
+    def __repr__(self):
+        return "<%s>" % self
