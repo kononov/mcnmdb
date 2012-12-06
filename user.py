@@ -97,7 +97,8 @@ class User(db.Model, UserMixin, BaseMixin):
     # список всех списков покупок у этого пользователя
     lists            = db.relationship('ShoppingList', primaryjoin="ShoppingList.user_id==User.id", backref=db.backref('user'))
 
-
+    # избранные магазины пользователя
+    favstores        = db.relationship('UserFavouriteStore', primaryjoin="UserFavouriteStore.user_id==User.id")
 
     confirmed_at     = db.Column(db.DateTime())
     last_login_at    = db.Column(db.DateTime)

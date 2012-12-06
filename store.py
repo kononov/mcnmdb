@@ -88,9 +88,10 @@ class StoreGroup(db.Model, BaseMixin, ByMixin):
     Таблица групп магазинов
     """
 
-    __tablename__ = 'storegroups'
-    name        = db.Column(db.Unicode(), nullable=False, unique=True)
-    description = db.Column(db.Unicode(1000))
+    __tablename__  = 'storegroups'
+    name           = db.Column(db.Unicode(), nullable=False)
+    description    = db.Column(db.Unicode(1000))
+    corporation_id = db.Column(db.Integer, db.ForeignKey('corporations.id')) # id ЮЛ
 
     def __str__(self):
         ctx = (str(self.id), self.name)
