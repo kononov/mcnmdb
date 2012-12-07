@@ -18,7 +18,7 @@ class SearchHistory(db.Model, BaseMixin, ByMixin):
 
     __tablename__ = 'search_history'
 
-    query   = db.Column(db.Unicode(100), nullable=False)  # строка поиска
+    query   = db.Column(db.Unicode(), nullable=False)  # строка поиска
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     type    = db.Column(db.Integer) # источник поиска
 
