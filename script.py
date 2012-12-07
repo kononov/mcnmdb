@@ -203,11 +203,7 @@ class CreateFixturesCommand(Command):
         # Создаем предложения
         f_offers = []
         for offer in f_offer.offers:
-            measure = Measure.query.filter_by(id=offer[4]).first()
-            if measure:
-                f_offers.append(Offer(name=offer[0], description=offer[1], type=offer[2], price=offer[3], measure=measure, store_id=1, datefinish=datetime.date(2012, 12, 31)))
-                print 'OK! - Offer "%s" created successfully.' % offer[0]
-            else:
-                print u'ERROR! - Проверить фикстуры для предложения "%s". Невозможно определить тип единицы измерения по id "%s"!' % (offer[0], offer[4])
+            f_offers.append(Offer(name=offer[0], description=offer[1], type=offer[2], price=offer[3], measure_id=offer[4], store_id=1, datefinish=datetime.date(2012, 12, 31)))
+            print 'OK! - Offer "%s" created successfully.' % offer[0]
         save_models(f_offers)
         print '------------------FINISH------------------------'

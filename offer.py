@@ -23,6 +23,7 @@ class Offer(db.Model, BaseMixin, ByMixin):
     store_id         = db.Column(db.Integer, db.ForeignKey('stores.id'))  # id магазина, чье предложение
     price            = db.Column(db.Numeric(10,2))  # стоимость предложения, например "1234.70"
 
+    measure_id       = db.Column(db.Integer, db.ForeignKey('measures.id')) # id типа едницы товара
     measure          = db.relationship("Measure")
 
     type             = db.Column(db.Integer)  # тип предложения 0-обычное, 1-спец предложение
@@ -58,7 +59,7 @@ class Offer(db.Model, BaseMixin, ByMixin):
 
 class Measure(db.Model, BaseMixin):
     """
-    Таблица типов единиц товаров
+    Таблица-справочник типов единиц товаров
     """
 
     __tablename__ = 'measures'
