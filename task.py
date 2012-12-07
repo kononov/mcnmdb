@@ -35,7 +35,7 @@ class Task(db.Model, BaseMixin, ByMixin):
     file_name = db.Column(db.Unicode(length=256))  # Имя файла
 
     # список всех элементов в задаче
-    items = db.relationship('TaskItem', backref=db.backref('task'))
+    items = db.relationship('TaskItem', primaryjoin="TaskItem.task_id==Task.id", backref=db.backref('task'))
 
 
 class TaskItem(db.Model, BaseMixin, ByMixin):

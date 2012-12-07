@@ -63,10 +63,10 @@ class Store(db.Model, BaseMixin, ByMixin):
     delivery       = db.Column(db.Boolean, default=False) # True - есть доставка, False - нет доставки (по умолчанию)
     onlineonly     = db.Column(db.Boolean, default=False) # True - только онлайн, False - обычный розничный магаз (по умолчанию)
     taskitem_id    = db.Column(db.Integer, db.ForeignKey('task_items.id')) # id элемента задачи если это была пакетная загрузка
-    pictures       = db.relationship('StorePicture')
+    pictures       = db.relationship('StorePicture', primaryjoin="StorePicture.store_id==Store.id")
 
     # список всех предложения этого магазина
-    offers         = db.relationship('Offer', backref=db.backref('store'))
+    offers         = db.relationship('Offer', primaryjoin="Offer.store_id==Store.id" , backref=db.backref('store'))
 
     __table_args__ = (
                        db.Index("idx_stores_corporation_id", "corporation_id"),

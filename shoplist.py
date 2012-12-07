@@ -34,10 +34,10 @@ class ShoppingList(db.Model, BaseMixin, ByMixin):
     user_id     = db.Column(db.Integer, db.ForeignKey('users.id'))
 
     # список всех позиций в этом списке
-    items       = db.relationship('ShoppingListItem', backref=db.backref('list'))
- 
+    items       = db.relationship('ShoppingListItem', primaryjoin="ShoppingListItem.list_id==ShoppingList.id", backref=db.backref('list'))
+
     # настройки списка
-    settings    = db.relationship('ShoppingListSettings', backref=db.backref('list')) 
+    settings    = db.relationship('ShoppingListSettings', primaryjoin="ShoppingListSettings.list_id==ShoppingList.id", backref=db.backref('list'))
 
     __table_args__ = (
                        db.Index("idx_lists_store_id", "user_id"),

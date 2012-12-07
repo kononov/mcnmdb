@@ -36,12 +36,12 @@ class Offer(db.Model, BaseMixin, ByMixin):
     logo             = db.Column(db.String(1000))  # ссылка на лого (актуально для спец. предложений)
     oldprice         = db.Column(db.Numeric(10,2))  # стоимость предложения, например "234.70" (актуально для спец. предложений)
 
-    items            = db.relationship('ShoppingListItem', backref=db.backref('offer'))
+    items            = db.relationship('ShoppingListItem', primaryjoin="ShoppingListItem.offer_id==Offer.id", backref=db.backref('offer'))
     datefinish       = db.Column(db.DateTime, nullable=False)  # дата-время окончания действия предложения
 
     taskitem_id      = db.Column(db.Integer, db.ForeignKey('task_items.id')) # id элемента задачи если это была пакетная загрузка
 
-    pictures         = db.relationship('OfferPicture', backref=db.backref('offer'))
+    pictures         = db.relationship('OfferPicture', primaryjoin="OfferPicture.offer_id==Offer.id", backref=db.backref('offer'))
 
     __table_args__ = (
                        db.Index("idx_offers_store_id", "store_id"),

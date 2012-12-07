@@ -56,7 +56,7 @@ class UserOption(db.Model, BaseMixin):
     description = db.Column(db.Unicode(1000))
 
     # настройки пользователя
-    settings    = db.relationship('UserSettings', backref=db.backref('option'))
+    settings    = db.relationship('UserSettings', primaryjoin="UserSettings.option_id==UserOption.id", backref=db.backref('option'))
 
     def __str__(self):
         return self.description
@@ -74,7 +74,7 @@ class ListOption(db.Model, BaseMixin):
     description = db.Column(db.Unicode(1000))
 
     # настройки списка
-    settings    = db.relationship('ShoppingListSettings', backref=db.backref('option'))
+    settings    = db.relationship('ShoppingListSettings', primaryjoin="ShoppingListSettings.option_id==ListOption.id", backref=db.backref('option'))
 
     def __str__(self):
         return self.description
