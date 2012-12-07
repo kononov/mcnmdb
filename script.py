@@ -154,17 +154,7 @@ class CreateFixturesCommand(Command):
         save_models(f_corporations)
         print '---------------------------------------------------'
 
-        # Создаем группы магазинов
-        f_storegroups = []
-        for group in f_store.groups:
-            corporation = Corporation.query.filter_by(name=group[2]).first()
-            if corporation:
-                f_storegroups.append(StoreGroup(name=group[0],description=group[1], corporation_id=corporation.id))
-                print 'OK! - StoreGroup "%s" created successfully.' % group[0]
-            else:
-                print u'ERROR! - Проверить фикстуры для группы "%s". Невозможно определить ЮрЛицо по названию "%s"!' % (group[0], group[2])
-        save_models(f_storegroups)
-        print '---------------------------------------------------'
+
 
         # Создаем пользователей
         f_user = []
@@ -182,13 +172,34 @@ class CreateFixturesCommand(Command):
         save_models(f_user)
         print '---------------------------------------------------'
 
-        # Создаем магазины
+        # Создаем магазины и рандомно привязываем их к ЮЛ
         f_stores = []
         for store in f_store.stores:
-            f_stores.append(Store(name=store[0], open_time=store[1], close_time=store[2], metro=store[3], phone=store[4], city=store[5], address=store[6], corporation_id=1))
+            f_stores.append(Store(name=store[0], open_time=store[1], close_time=store[2], metro=store[3], phone=store[4], city=store[5], address=store[6], corporation_id=randint(1,len(f_corporations)) ))
             print 'OK! - Store "%s" created successfully.' % store[0]
         save_models(f_stores)
         print '---------------------------------------------------'
+
+
+        # Создаем группы магазинов
+        # Рандомно заполняем группы половину всех магазинов. Чтобы магазы не в группах тоже остались.
+        f_storegroups = []
+        for group in f_store.groups:
+            corporation = Corporation.query.filter_by(name=group[2]).first()
+            if corporation:
+                if group[0]==u"Магазины в Москве":
+                    x_stores = filter(lambda store: store.city==u"Москва" and store.corporation.name==group[2], f_stores[len(f_stores)/2:])
+                    f_storegroups.append(StoreGroup(name=group[0],description=group[1], corporation_id=corporation.id, stores_in_this_group=x_stores))
+                    print 'OK! - StoreGroup "%s" created successfully.' % group[0]
+                elif group[0]==u"Магазины в Замкадье":
+                    x_stores = filter(lambda store: store.city!=u"Москва" and store.corporation.name==group[2], f_stores[len(f_stores)/2:])
+                    f_storegroups.append(StoreGroup(name=group[0],description=group[1], corporation_id=corporation.id, stores_in_this_group=x_stores))
+                    print 'OK! - StoreGroup "%s" created successfully.' % group[0]
+            else:
+                print u'ERROR! - Проверить фикстуры для группы "%s". Невозможно определить ЮрЛицо по названию "%s"!' % (group[0], group[2])
+        save_models(f_storegroups)
+        print '---------------------------------------------------'
+
 
         # Рандомно добавляем покупателям избранные магазины, по 20 штук
         f_favstores = []

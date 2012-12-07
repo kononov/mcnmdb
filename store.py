@@ -40,6 +40,29 @@ class Corporation(db.Model, BaseMixin):
         return "<%s>" % self
 
 
+groups_stores = db.Table('groups_stores',
+    db.Column('store_id', db.Integer(), db.ForeignKey('stores.id')),
+    db.Column('group_id', db.Integer(), db.ForeignKey('storegroups.id')))
+
+
+class StoreGroup(db.Model, BaseMixin, ByMixin):
+    """
+    Таблица групп магазинов
+    """
+
+    __tablename__  = 'storegroups'
+    name           = db.Column(db.Unicode(), nullable=False)
+    description    = db.Column(db.Unicode(1000))
+    corporation_id = db.Column(db.Integer, db.ForeignKey('corporations.id')) # id ЮЛ
+
+    def __str__(self):
+        ctx = (str(self.id), self.name)
+        return '<Store group id=%s, name=%s>' % ctx
+
+    def __repr__(self):
+        return "<%s>" % self
+
+
 class Store(db.Model, BaseMixin, ByMixin):
     """
     Таблица магазинов
@@ -68,6 +91,9 @@ class Store(db.Model, BaseMixin, ByMixin):
     # список всех предложения этого магазина
     offers         = db.relationship('Offer', primaryjoin="Offer.store_id==Store.id" , backref=db.backref('store'))
 
+    # список всех групп куда входит этот магазин
+    groups         = db.relationship('StoreGroup', secondary=groups_stores, backref = db.backref('stores_in_this_group'))
+
     __table_args__ = (
                        db.Index("idx_stores_corporation_id", "corporation_id"),
                        db.Index("idx_stores_state_id", "state_id"),
@@ -81,27 +107,6 @@ class Store(db.Model, BaseMixin, ByMixin):
     def __repr__(self):
         return "<%s>" % self
 
-groups_stores = db.Table('groups_stores',
-    db.Column('store_id', db.Integer(), db.ForeignKey('stores.id')),
-    db.Column('group_id', db.Integer(), db.ForeignKey('storegroups.id')))
-
-
-class StoreGroup(db.Model, BaseMixin, ByMixin):
-    """
-    Таблица групп магазинов
-    """
-
-    __tablename__  = 'storegroups'
-    name           = db.Column(db.Unicode(), nullable=False)
-    description    = db.Column(db.Unicode(1000))
-    corporation_id = db.Column(db.Integer, db.ForeignKey('corporations.id')) # id ЮЛ
-
-    def __str__(self):
-        ctx = (str(self.id), self.name)
-        return '<Store group id=%s, name=%s>' % ctx
-
-    def __repr__(self):
-        return "<%s>" % self
 
 
 class StorePicture(db.Model, BaseMixin, ByMixin):
