@@ -151,5 +151,6 @@ class UserFavouriteStore(db.Model, BaseMixin):
     """
 
     __tablename__ = 'favourite_stores'
-    user_id = db.Column(db.Integer(), db.ForeignKey('users.id'))  # id пользователя, кто добавил предложение
-    store   = db.relationship('Store')
+    user_id       = db.Column(db.Integer(), db.ForeignKey('users.id'))
+    store_id      = db.Column(db.Integer(), db.ForeignKey('stores.id'))
+    store         = db.relationship('Store', primaryjoin="Store.id==UserFavouriteStore.store_id")
