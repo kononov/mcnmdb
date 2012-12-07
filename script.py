@@ -194,7 +194,7 @@ class CreateFixturesCommand(Command):
         f_favstores = []
         for u in filter(lambda u: "customer" in u[3], user.users):
             for i in range(20):
-                f_favstores.append(UserFavouriteStore(user_id=u[0], store=f_stores[randint(1,len(f_stores))] ))
+                f_favstores.append(UserFavouriteStore(user_id=u[0], store_id=randint(1,len(f_stores))))
                 print "OK! - Store successfully added to user's (%s) favorites." % u[1]
         save_models(f_favstores)
         print '---------------------------------------------------'

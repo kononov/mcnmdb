@@ -79,7 +79,7 @@ class OfferPicture(db.Model, BaseMixin, ByMixin):
 
     __tablename__ = 'offer_pictures'
 
-    offer_id = db.Column(db.Integer, db.ForeignKey('stores.id')) # id магазина
+    offer_id = db.Column(db.Integer, db.ForeignKey('offers.id')) # id магазина
     url      = db.Column(db.UnicodeText) # Адрес фото
 
 
