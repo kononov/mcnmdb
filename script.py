@@ -170,15 +170,15 @@ class CreateFixturesCommand(Command):
         f_user = []
         for u in user.users:
             roles = []
-            for role in u[3]:
+            for role in u[2]:
                 role = Role.query.filter_by(name=role).first()
                 roles.append(role)
-            corporation = Corporation.query.filter_by(name=u[5]).first()
+            corporation = Corporation.query.filter_by(name=u[4]).first()
             if corporation:
-                f_user.append(User(id=u[0], email=u[1], password=encrypt_password(u[2]), roles=roles, active=u[4], confirmed_at=datetime.datetime.utcnow(), corporation=corporation))
+                f_user.append(User(email=u[0], password=encrypt_password(u[1]), roles=roles, active=u[3], confirmed_at=datetime.datetime.utcnow(), corporation=corporation))
             else:
-                f_user.append(User(id=u[0], email=u[1], password=encrypt_password(u[2]), roles=roles, active=u[4], confirmed_at=datetime.datetime.utcnow()))
-            print 'OK! - User "%s" created successfully.' % u[1]
+                f_user.append(User(email=u[0], password=encrypt_password(u[1]), roles=roles, active=u[3], confirmed_at=datetime.datetime.utcnow()))
+            print 'OK! - User "%s" created successfully.' % u[0]
         save_models(f_user)
         print '---------------------------------------------------'
 
@@ -192,10 +192,11 @@ class CreateFixturesCommand(Command):
 
         # Рандомно добавляем покупателям избранные магазины, по 20 штук
         f_favstores = []
-        for u in filter(lambda u: "customer" in u[3], user.users):
+        for u in filter(lambda u: "customer" in u[2], user.users):
             for i in range(20):
-                f_favstores.append(UserFavouriteStore(user_id=u[0], store_id=randint(1,len(f_stores))))
-                print "OK! - Store successfully added to user's (%s) favorites." % u[1]
+                usr = User.query.filter_by(email=u[0]).first()
+                f_favstores.append(UserFavouriteStore(user_id=usr.id, store_id=randint(1,len(f_stores))))
+                print "OK! - Store successfully added to user's (%s) favorites." % u[0]
         save_models(f_favstores)
         print '---------------------------------------------------'
 
