@@ -18,7 +18,7 @@ class Corporation(db.Model, BaseMixin):
     __tablename__ = 'corporations'
 
     name        = db.Column(db.Unicode(), nullable=False) # Название ЮЛ, пример "ОАО Ромашка"
-    description = db.Column(db.Unicode(1000))  # Описание ЮЛ
+    description = db.Column(db.UnicodeText)  # Описание ЮЛ
     president   = db.Column(db.Unicode(1000))  # Директор
     INN         = db.Column(db.Unicode(25))  # ИНН
     KPP         = db.Column(db.Unicode(25))  # КПП
@@ -52,7 +52,7 @@ class StoreGroup(db.Model, BaseMixin, ByMixin):
 
     __tablename__  = 'storegroups'
     name           = db.Column(db.Unicode(), nullable=False)
-    description    = db.Column(db.Unicode(1000))
+    description    = db.Column(db.UnicodeText())
     corporation_id = db.Column(db.Integer, db.ForeignKey('corporations.id')) # id ЮЛ
 
     def __str__(self):
@@ -70,7 +70,7 @@ class Store(db.Model, BaseMixin, ByMixin):
 
     __tablename__ = 'stores'
     name           = db.Column(db.Unicode(1000), nullable=False) # Название, пример "Перекресток"
-    description    = db.Column(db.Unicode(1000)) # Описание магазина
+    description    = db.Column(db.UnicodeText()) # Описание магазина
     corporation_id = db.Column(db.Integer, db.ForeignKey('corporations.id')) # id ЮЛ
     city           = db.Column(db.Unicode(1000), nullable=False) # Город, пример "Москва", выбирается из списка известных городов
     region         = db.Column(db.Unicode(1000)) # Район города, пример "ЦАО", , выбирается из списка известных районов/округов
@@ -116,7 +116,7 @@ class StorePicture(db.Model, BaseMixin, ByMixin):
 
     __tablename__ = 'store_pictures'
     store_id = db.Column(db.Integer, db.ForeignKey('stores.id')) # id магазина
-    url      = db.Column(db.UnicodeText) # Адрес фото
+    url      = db.Column(db.Unicode(1000)) # Адрес фото
 
 
 class StoreState(db.Model, BaseMixin):

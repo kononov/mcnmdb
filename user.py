@@ -67,23 +67,23 @@ class User(db.Model, UserMixin, BaseMixin):
     """
 
     __tablename__ = 'users'
-    username         = db.Column(db.String(255))
-    first_name       = db.Column(db.String(255))
-    last_name        = db.Column(db.String(255))
+    username         = db.Column(db.Unicode(255))
+    first_name       = db.Column(db.Unicode(255))
+    last_name        = db.Column(db.Unicode(255))
     email            = db.Column(db.String(255), nullable=False, unique=True)
-    phone            = db.Column(db.String(255))
+    phone            = db.Column(db.Unicode(255))
     password         = db.Column(db.String(255), nullable=False)
 
     active           = db.Column(db.Boolean, default=False, nullable=False)
     gender           = db.Column(db.Integer(), default=2)
     language         = db.Column(db.String(2), default='ru') #choices=('en','ru','de','es')
-    website          = db.Column(db.String(255), default='http://simpla.com')
+    website          = db.Column(db.Unicode(255), default='http://simpla.com')
     birthdate        = db.Column(db.DateTime())
-    about_me         = db.Column(db.String(1000))
+    about_me         = db.Column(db.UnicodeText())
     avatar           = db.Column(db.String(1000)) # ссылка на фотку пользователя
 
-    country          = db.Column(db.String(255))
-    city             = db.Column(db.String(255))
+    country          = db.Column(db.Unicode(255))
+    city             = db.Column(db.Unicode(255))
 
     # ссылка на ЮЛ, только для пользователей с ролью storeadmin !!!
     corporation_id   = db.Column(db.Integer, db.ForeignKey('corporations.id')) # id ЮЛ
