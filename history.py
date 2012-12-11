@@ -5,10 +5,11 @@ from datetime import datetime
 from .db import db
 from base import BaseMixin, ByMixin
 
-TYPE_SOURCE_UNKNOWN = 0
-TYPE_SOURCE_WEB     = 1
-TYPE_SOURCE_IOS     = 2
-TYPE_SOURCE_ANDROID = 3
+TYPE_SOURCE_UNKNOWN    = 0
+TYPE_SOURCE_WEB        = 1
+TYPE_SOURCE_ANY_CLIENT = 2
+TYPE_SOURCE_IOS        = 3
+TYPE_SOURCE_ANDROID    = 4
 
 
 class SearchHistory(db.Model, BaseMixin, ByMixin):
