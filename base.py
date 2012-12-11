@@ -1,13 +1,10 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-from datetime import datetime
-
+import datetime
 from colanderalchemy import Column
-from colanderalchemy import relationship
-
 from sqlalchemy import event
 from sqlalchemy.ext.declarative import declared_attr
-from sqlalchemy.orm import object_mapper
+from sqlalchemy.orm import object_mapper, ColumnProperty
 from sqlalchemy.orm.session import object_session
 
 from .db import db
@@ -63,9 +60,9 @@ class TimesMixin(object):
     """
 
     # дата-время добавления записи
-    created_at = Column(db.DateTime, default=datetime.utcnow, nullable=False, ca_exclude=True)
+    created_at = Column(db.DateTime, default=datetime.datetime.utcnow, nullable=False, ca_exclude=True)
     # дата-время обновления записи
-    updated_at = Column(db.DateTime, onupdate=datetime.utcnow, default=datetime.utcnow, ca_exclude=True)
+    updated_at = Column(db.DateTime, onupdate=datetime.datetime.utcnow, default=datetime.datetime.utcnow, ca_exclude=True)
 
 
 class ByMixin(object):
@@ -154,6 +151,90 @@ class BaseMixin(IdMixin, UpdateMixin, TimesMixin):
     def appstruct(self):
         return self.generate_appstruct()
 
+
+    def _to_dict(self, deep=None, exclude=None, include=None,
+                 exclude_relations=None, include_relations=None):
+        """Returns a dictionary representing the fields of the specified `instance`
+        of a SQLAlchemy model.
+
+        `deep` is a dictionary containing a mapping from a relation name (for a
+        relation of `instance`) to either a list or a dictionary. This is a
+        recursive structure which represents the `deep` argument when calling
+        :func:`!_to_dict` on related instances. When an empty list is encountered,
+        :func:`!_to_dict` returns a list of the string representations of the
+        related instances.
+
+        If either `include` or `exclude` is not ``None``, exactly one of them must
+        be specified. If both are not ``None``, then this function will raise a
+        :exc:`ValueError`. `exclude` must be a list of strings specifying the
+        columns which will *not* be present in the returned dictionary
+        representation of the object (in other words, it is a
+        blacklist). Similarly, `include` specifies the only columns which will be
+        present in the returned dictionary (in other words, it is a whitelist).
+
+        .. note::
+
+           If `include` is an iterable of length zero (like the empty tuple or the
+           empty list), then the returned dictionary will be empty. If `include` is
+           ``None``, then the returned dictionary will include all columns not
+           excluded by `exclude`.
+
+        `include_relations` is a dictionary mapping strings representing relation
+        fields on the specified `instance` to a list of strings representing the
+        names of fields on the related model which should be included in the
+        returned dictionary; `exclude_relations` is similar.
+
+        """
+        if (exclude is not None or exclude_relations is not None) and \
+                (include is not None or include_relations is not None):
+            raise ValueError('Cannot specify both include and exclude.')
+        # create the dictionary mapping column name to value
+        columns = (p.key for p in object_mapper(self).iterate_properties
+                   if isinstance(p, ColumnProperty))
+        # filter the columns based on exclude and include values
+        if exclude is not None:
+            columns = (c for c in columns if c not in exclude)
+        elif include is not None:
+            columns = (c for c in columns if c in include)
+        result = dict((col, getattr(self, col)) for col in columns)
+        # Convert datetime and date objects to ISO 8601 format.
+        #
+        # TODO We can get rid of this when issue #33 is resolved.
+        for key, value in result.items():
+            if isinstance(value, datetime.date):
+                result[key] = value.isoformat()
+        # recursively call _to_dict on each of the `deep` relations
+        deep = deep or {}
+        for relation, rdeep in deep.iteritems():
+            # Get the related value so we can see if it is None, a list, a query
+            # (as specified by a dynamic relationship loader), or an actual
+            # instance of a model.
+            relatedvalue = getattr(self, relation)
+            if relatedvalue is None:
+                result[relation] = None
+                continue
+            # Determine the included and excluded fields for the related model.
+            newexclude = None
+            newinclude = None
+            if exclude_relations is not None and relation in exclude_relations:
+                newexclude = exclude_relations[relation]
+            elif (include_relations is not None and
+                  relation in include_relations):
+                newinclude = include_relations[relation]
+            if isinstance(relatedvalue, list):
+                result[relation] = [self._to_dict(inst, rdeep, exclude=newexclude,
+                                             include=newinclude)
+                                    for inst in relatedvalue]
+            else:
+                result[relation] = self._to_dict(relatedvalue.one(), rdeep,
+                                            exclude=newexclude,
+                                            include=newinclude)
+        return result
+
+
+    @property
+    def serialized(self):
+        return self._to_dict()
 
 class Alembic(db.Model):
     __tablename__ = 'alembic_version'
