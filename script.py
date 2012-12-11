@@ -175,7 +175,7 @@ class CreateFixturesCommand(Command):
         # Создаем магазины и рандомно привязываем их к ЮЛ
         f_stores = []
         for store in f_store.stores:
-            f_stores.append(Store(name=store[0], open_time=store[1], close_time=store[2], metro=store[3], phone=store[4], city=store[5], address=store[6], corporation_id=randint(1,len(f_corporations)) ))
+            f_stores.append(Store(name=store[0], open_time=store[1], close_time=store[2], metro=store[3], phone=store[4], city=store[5], address=store[6], lat=store[7], lng=store[8], corporation_id=randint(1,len(f_corporations)) ))
             print 'OK! - Store "%s" created successfully.' % store[0]
         save_models(f_stores)
         print '---------------------------------------------------'
