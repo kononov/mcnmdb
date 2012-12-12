@@ -23,6 +23,12 @@ class Offer(db.Model, BaseMixin, ByMixin):
     store_id         = db.Column(db.Integer, db.ForeignKey('stores.id'))  # id магазина, чье предложение
     price            = db.Column(db.Numeric(10,2))  # стоимость предложения, например "1234.70"
 
+    weight           = db.Column(db.Numeric(10,4)) # вес товара
+    weight_type      = db.Column(db.Integer, db.ForeignKey('weight_types.id')) # единицы измерения веса
+
+    volume           = db.Column(db.Numeric(10,4)) # объем товара для жидкостей
+    volume_type      = db.Column(db.Integer, db.ForeignKey('volume_types.id')) # единицы измерения объема
+
     measure_id       = db.Column(db.Integer, db.ForeignKey('measures.id')) # id типа едницы товара
     measure          = db.relationship("Measure")
 
@@ -37,7 +43,7 @@ class Offer(db.Model, BaseMixin, ByMixin):
     oldprice         = db.Column(db.Numeric(10,2))  # стоимость предложения, например "234.70" (актуально для спец. предложений)
 
     items            = db.relationship('ShoppingListItem', primaryjoin="ShoppingListItem.offer_id==Offer.id", backref=db.backref('offer'))
-    datefinish       = db.Column(db.DateTime, nullable=False)  # дата-время окончания действия предложения
+    datefinish       = db.Column(db.DateTime, nullable=True)  # дата-время окончания действия предложения
 
     taskitem_id      = db.Column(db.Integer, db.ForeignKey('task_items.id')) # id элемента задачи если это была пакетная загрузка
 
@@ -67,6 +73,38 @@ class Measure(db.Model, BaseMixin):
 
     def __str__(self):
         return self.description
+
+    def __repr__(self):
+        return "<%s>" % self
+
+
+class WeightType(db.Model, BaseMixin):
+    """
+    Таблица-справочник единиц измерений веса
+    """
+
+    __tablename__ = 'weight_types'
+    description = db.Column(db.String(1000))  # Описание
+    abbr        = db.Column(db.String(1000))  # Сокращение
+
+    def __str__(self):
+        return self.abbr
+
+    def __repr__(self):
+        return "<%s>" % self
+
+
+class VolumeType(db.Model, BaseMixin):
+    """
+    Таблица-справочник единиц измерений объема
+    """
+
+    __tablename__ = 'volume_types'
+    description = db.Column(db.String(1000))  # Описание
+    abbr        = db.Column(db.String(1000))  # Сокращение
+
+    def __str__(self):
+        return self.abbr
 
     def __repr__(self):
         return "<%s>" % self

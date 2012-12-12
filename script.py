@@ -146,6 +146,23 @@ class CreateFixturesCommand(Command):
         save_models(f_measures)
         print '---------------------------------------------------'
 
+        # Заполняем справочник единиц измерений веса
+        f_weighttypes = []
+        for wtype in data.weight_types:
+            f_weighttypes.append(WeightType(id=wtype[0], description=wtype[1], abbr=wtype[2]))
+            print 'OK! - WeightType "%s" created successfully.' % wtype[2]
+        save_models(f_weighttypes)
+        print '---------------------------------------------------'
+
+        # Заполняем справочник единиц измерений объема
+        f_volumettypes = []
+        for vtype in data.volume_types:
+            f_volumettypes.append(VolumeType(id=vtype[0], description=vtype[1], abbr=vtype[2]))
+            print 'OK! - VolumeType "%s" created successfully.' % vtype[2]
+        save_models(f_volumettypes)
+        print '---------------------------------------------------'
+
+
         # Создаем юр. лица
         f_corporations = []
         for corp in f_store.corporations:
@@ -215,7 +232,7 @@ class CreateFixturesCommand(Command):
         # Создаем предложения
         f_offers = []
         for offer in f_offer.offers:
-            f_offers.append(Offer(name=offer[0], description=offer[1], type=offer[2], price=offer[3], measure_id=offer[4], store_id=1, datefinish=datetime.date(2012, 12, 31)))
+            f_offers.append(Offer(name=offer[0], description=offer[1], type=offer[2], price=offer[3], measure_id=offer[4], weight=offer[5], weight_type=offer[6], store_id=1, datefinish=datetime.date(2012, 12, 31)))
             print 'OK! - Offer "%s" created successfully.' % offer[0]
         save_models(f_offers)
         print '------------------FINISH------------------------'

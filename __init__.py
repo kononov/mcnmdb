@@ -1,6 +1,6 @@
 from db import db
 from account import Account, Transaction, TransactionType, AccountState, TransactionState
-from offer import Offer, Measure, OfferPicture, OfferState
+from offer import Offer, Measure, OfferPicture, OfferState, WeightType, VolumeType
 from settings import ShoppingListSettings, UserSettings, UserOption, ListOption
 from shoplist import ShoppingListItem, ShoppingList
 from store import Corporation, Store, StoreGroup, StorePicture, StoreState
