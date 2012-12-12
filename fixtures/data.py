@@ -59,7 +59,7 @@ measures = (
 
 # единицы измерения веса
 weight_types = (
-                 (0, u'Unknown'),
+                 (0, u'Unknown', u'Unknown'),
                  (1, u'грамм', u'гр'),
                  (2, u'килограмм', u'кг'),
                )
