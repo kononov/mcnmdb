@@ -20,7 +20,7 @@ class ShoppingListItem(db.Model, BaseMixin, ByMixin):
                      )
 
     def __str__(self):
-        ctx = (str(self.id), self.name)
+        ctx = (str(self.id), self.offer.name)
         return '<ListItem id=%s, name=%s>' % ctx
 
     def __repr__(self):
