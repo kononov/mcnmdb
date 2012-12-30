@@ -160,7 +160,7 @@ class BaseMixin(IdMixin, UpdateMixin, TimesMixin):
 		
     def _get_relations(self):
         """Returns a list of relation names of `model` (as a list of strings)."""
-        cols = _get_columns(self)
+        cols = self._get_columns()
         return [k for k in cols if isinstance(cols[k].property, RelProperty)]
 
     def _to_dict(self, deep=None, exclude=None, include=None,
@@ -245,7 +245,7 @@ class BaseMixin(IdMixin, UpdateMixin, TimesMixin):
 
     @property
     def serialized(self):
-        relations = frozenset(_get_relations(self))
+        relations = frozenset(self._get_relations())
         deep = dict((r, {}) for r in relations)
 	
         return self._to_dict(deep=deep)
