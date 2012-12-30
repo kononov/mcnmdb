@@ -6,6 +6,7 @@ from sqlalchemy import event
 from sqlalchemy.ext.declarative import declared_attr
 from sqlalchemy.orm import object_mapper, ColumnProperty
 from sqlalchemy.orm.session import object_session
+from sqlalchemy.orm.properties import RelationshipProperty as RelProperty
 
 from .db import db
 
@@ -151,6 +152,16 @@ class BaseMixin(IdMixin, UpdateMixin, TimesMixin):
     def appstruct(self):
         return self.generate_appstruct()
 
+    def _get_columns(self):
+        """Returns a dictionary-like object containing all the columns of the
+        specified `model` class.
+        """
+        return self._sa_class_manager
+		
+    def _get_relations(self):
+        """Returns a list of relation names of `model` (as a list of strings)."""
+        cols = _get_columns(self)
+        return [k for k in cols if isinstance(cols[k].property, RelProperty)]
 
     def _to_dict(self, deep=None, exclude=None, include=None,
                  exclude_relations=None, include_relations=None):
@@ -234,7 +245,10 @@ class BaseMixin(IdMixin, UpdateMixin, TimesMixin):
 
     @property
     def serialized(self):
-        return self._to_dict()
+        relations = frozenset(_get_relations(self))
+        deep = dict((r, {}) for r in relations)
+	
+        return self._to_dict(deep=deep)
 
 class Alembic(db.Model):
     __tablename__ = 'alembic_version'
