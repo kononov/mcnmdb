@@ -233,7 +233,8 @@ class BaseMixin(IdMixin, UpdateMixin, TimesMixin):
                   relation in include_relations):
                 newinclude = include_relations[relation]
             if isinstance(relatedvalue, list):
-                result[relation] = [self._to_dict(inst, rdeep, exclude=newexclude, include=newinclude) for inst in relatedvalue]
+                result[relation] = [self._to_dict(inst, rdeep) for inst in relatedvalue]
+#                result[relation] = [self._to_dict(inst, rdeep, exclude=newexclude, include=newinclude) for inst in relatedvalue]
             else:
                 result[relation] = self._to_dict(relatedvalue.one(), rdeep,
                                             exclude=newexclude,
