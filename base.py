@@ -9,10 +9,10 @@ from sqlalchemy.ext.declarative import declared_attr
 from sqlalchemy.orm import object_mapper
 from sqlalchemy.orm.session import object_session
 from sqlalchemy.orm.properties import RelationshipProperty as RelProperty
-from werkzeug import cached_property
 
 from .db import db
-from .serialize import get_relations, to_dict
+from flask.ext.restless.views import _get_relations, _to_dict, _parse_excludes, _parse_includes
+
 
 def save_model(model):
     db.session.add(model)
@@ -198,14 +198,25 @@ class BaseMixin(IdMixin, UpdateMixin, TimesMixin):
     def appstruct(self):
         return self.generate_appstruct()
 
-    @cached_property
-    def serialized(self):
-        relations = frozenset(get_relations(self))
-        print relations
+    def serialize(self, exclude=None, include=None):
+	
+        exclude_columns, exclude_relations = _parse_excludes(exclude)
+        include_columns, include_relations = _parse_includes(include)
+			
+        relations = frozenset(_get_relations(self))
+        # do not follow relations that will not be included in the response
+        if include_columns is not None:
+            cols = frozenset(include_columns)
+            rels = frozenset(include_relations)
+            relations &= (cols | rels)
+        elif exclude_columns is not None:
+            relations -= frozenset(exclude_columns)
         deep = dict((r, {}) for r in relations)
-        print deep
-        result = to_dict(self, deep)
-        print result
+        result = _to_dict(self, deep, exclude=exclude_columns,
+                          exclude_relations=exclude_relations,
+                          include=include_columns,
+                          include_relations=include_relations)
+
         return result
 
 
