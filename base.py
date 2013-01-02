@@ -11,7 +11,7 @@ from sqlalchemy.orm.session import object_session
 from sqlalchemy.orm.properties import RelationshipProperty as RelProperty
 
 from .db import db
-from flask.ext.restless.views import _get_relations, _to_dict, _parse_excludes, _parse_includes
+from flask.ext.restless.views import _get_relations, _to_dict
 
 
 def save_model(model):
@@ -198,11 +198,8 @@ class BaseMixin(IdMixin, UpdateMixin, TimesMixin):
     def appstruct(self):
         return self.generate_appstruct()
 
-    def serialize(self, exclude=None, include=None):
-	
-        exclude_columns, exclude_relations = _parse_excludes(exclude)
-        include_columns, include_relations = _parse_includes(include)
-			
+    def serialize(self, exclude_columns=None, exclude_relations=None, include_columns=None, include_relations=None):
+
         relations = frozenset(_get_relations(self))
         # do not follow relations that will not be included in the response
         if include_columns is not None:
