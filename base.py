@@ -3,11 +3,16 @@
 import datetime
 from colanderalchemy import Column
 from sqlalchemy import event
+from sqlalchemy import Date
+from sqlalchemy import DateTime
 from sqlalchemy.ext.declarative import declared_attr
-from sqlalchemy.orm import object_mapper, ColumnProperty
+from sqlalchemy.orm import object_mapper
 from sqlalchemy.orm.session import object_session
+from sqlalchemy.orm.properties import RelationshipProperty as RelProperty
 
 from .db import db
+from flask.ext.restless.views import _get_relations, _to_dict
+
 
 def save_model(model):
     db.session.add(model)
@@ -18,6 +23,48 @@ def save_models(models):
     db.session.add_all(models)
     db.session.commit()
     return models
+
+def is_date_field(model, fieldname):
+    """Returns ``True`` if and only if the field of `model` with the specified
+    name corresponds to either a :class:`datetime.date` object or a
+    :class:`datetime.datetime` object.
+
+    """
+    prop = getattr(model, fieldname).property
+    if isinstance(prop, RelProperty):
+        return False
+    fieldtype = prop.columns[0].type
+    return isinstance(fieldtype, Date) or isinstance(fieldtype, DateTime)
+
+def get_or_create(session, model, **kwargs):
+    """Returns the first instance of the specified model filtered by the
+    keyword arguments, or creates a new instance of the model and returns that.
+
+    This function returns a two-tuple in which the first element is the created
+    or retrieved instance and the second is a boolean value which is ``True``
+    if and only if an instance was created.
+
+    The idea for this function is based on Django's ``Model.get_or_create()``
+    method.
+
+    `session` is the session in which all database transactions are made (this
+    should be :attr:`flask.ext.sqlalchemy.SQLAlchemy.session`).
+
+    `model` is the SQLAlchemy model to get or create (this should be a subclass
+    of :class:`~flask.ext.restless.model.Entity`).
+
+    `kwargs` are the keyword arguments which will be passed to the
+    :func:`sqlalchemy.orm.query.Query.filter_by` function.
+
+    """
+    instance = session.query(model).filter_by(**kwargs).first()
+    if instance:
+        return instance, False
+    instance = model(**kwargs)
+    session.add(instance)
+    session.commit()
+    return instance, True
+
 
 class UpdateMixin(object):
     """Provides the 'update' convenience function to allow class
@@ -151,90 +198,23 @@ class BaseMixin(IdMixin, UpdateMixin, TimesMixin):
     def appstruct(self):
         return self.generate_appstruct()
 
+    def serialize(self, exclude_columns=None, exclude_relations=None, include_columns=None, include_relations=None):
 
-    def _to_dict(self, deep=None, exclude=None, include=None,
-                 exclude_relations=None, include_relations=None):
-        """Returns a dictionary representing the fields of the specified `instance`
-        of a SQLAlchemy model.
+        relations = frozenset(_get_relations(self))
+        # do not follow relations that will not be included in the response
+        if include_columns is not None:
+            cols = frozenset(include_columns)
+            rels = frozenset(include_relations)
+            relations &= (cols | rels)
+        elif exclude_columns is not None:
+            relations -= frozenset(exclude_columns)
+        deep = dict((r, {}) for r in relations)
+# FIXME: необходимо реализавать фильтрацию по атрибутам и связям 
+#        result = _to_dict(instance=self, deep=deep, exclude=exclude_columns, include=include_columns, exclude_relations=exclude_relations, include_relations=include_relations)
+        result = _to_dict(instance=self, deep=deep)
 
-        `deep` is a dictionary containing a mapping from a relation name (for a
-        relation of `instance`) to either a list or a dictionary. This is a
-        recursive structure which represents the `deep` argument when calling
-        :func:`!_to_dict` on related instances. When an empty list is encountered,
-        :func:`!_to_dict` returns a list of the string representations of the
-        related instances.
-
-        If either `include` or `exclude` is not ``None``, exactly one of them must
-        be specified. If both are not ``None``, then this function will raise a
-        :exc:`ValueError`. `exclude` must be a list of strings specifying the
-        columns which will *not* be present in the returned dictionary
-        representation of the object (in other words, it is a
-        blacklist). Similarly, `include` specifies the only columns which will be
-        present in the returned dictionary (in other words, it is a whitelist).
-
-        .. note::
-
-           If `include` is an iterable of length zero (like the empty tuple or the
-           empty list), then the returned dictionary will be empty. If `include` is
-           ``None``, then the returned dictionary will include all columns not
-           excluded by `exclude`.
-
-        `include_relations` is a dictionary mapping strings representing relation
-        fields on the specified `instance` to a list of strings representing the
-        names of fields on the related model which should be included in the
-        returned dictionary; `exclude_relations` is similar.
-
-        """
-        if (exclude is not None or exclude_relations is not None) and \
-                (include is not None or include_relations is not None):
-            raise ValueError('Cannot specify both include and exclude.')
-        # create the dictionary mapping column name to value
-        columns = (p.key for p in object_mapper(self).iterate_properties
-                   if isinstance(p, ColumnProperty))
-        # filter the columns based on exclude and include values
-        if exclude is not None:
-            columns = (c for c in columns if c not in exclude)
-        elif include is not None:
-            columns = (c for c in columns if c in include)
-        result = dict((col, getattr(self, col)) for col in columns)
-        # Convert datetime and date objects to ISO 8601 format.
-        #
-        # TODO We can get rid of this when issue #33 is resolved.
-        for key, value in result.items():
-            if isinstance(value, datetime.date):
-                result[key] = value.isoformat()
-        # recursively call _to_dict on each of the `deep` relations
-        deep = deep or {}
-        for relation, rdeep in deep.iteritems():
-            # Get the related value so we can see if it is None, a list, a query
-            # (as specified by a dynamic relationship loader), or an actual
-            # instance of a model.
-            relatedvalue = getattr(self, relation)
-            if relatedvalue is None:
-                result[relation] = None
-                continue
-            # Determine the included and excluded fields for the related model.
-            newexclude = None
-            newinclude = None
-            if exclude_relations is not None and relation in exclude_relations:
-                newexclude = exclude_relations[relation]
-            elif (include_relations is not None and
-                  relation in include_relations):
-                newinclude = include_relations[relation]
-            if isinstance(relatedvalue, list):
-                result[relation] = [self._to_dict(inst, rdeep, exclude=newexclude,
-                                             include=newinclude)
-                                    for inst in relatedvalue]
-            else:
-                result[relation] = self._to_dict(relatedvalue.one(), rdeep,
-                                            exclude=newexclude,
-                                            include=newinclude)
         return result
 
-
-    @property
-    def serialized(self):
-        return self._to_dict()
 
 class Alembic(db.Model):
     __tablename__ = 'alembic_version'
