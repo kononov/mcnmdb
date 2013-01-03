@@ -210,7 +210,8 @@ class BaseMixin(IdMixin, UpdateMixin, TimesMixin):
             relations -= frozenset(exclude_columns)
         deep = dict((r, {}) for r in relations)
 
-        result = _to_dict(instance=self, deep=deep, exclude=exclude_columns, include=include_columns, exclude_relations=exclude_relations, include_relations=include_relations)
+#        result = _to_dict(instance=self, deep=deep, exclude=exclude_columns, include=include_columns, exclude_relations=exclude_relations, include_relations=include_relations)
+        result = _to_dict(instance=self, deep=deep, exclude=exclude_columns, exclude_relations=exclude_relations)
 
         return result
 
