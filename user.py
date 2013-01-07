@@ -8,7 +8,7 @@ from .db import db
 from ..uploads import uploaded_avatars
 
 from base import BaseMixin, ByMixin
-from acl import ACLSubjectRef
+from acl import ACLSubjectRef, ACLObjectRef
 
 from flask.ext.security import UserMixin, RoleMixin
 
@@ -146,7 +146,7 @@ class User(db.Model, UserMixin, BaseMixin, ACLSubjectRef):
         return "<%s>" % self
 
 
-class UserFavouriteStore(db.Model, BaseMixin):
+class UserFavouriteStore(db.Model, BaseMixin, ACLObjectRef):
     """
     Таблица избранных магазинов для пользователя
     """
