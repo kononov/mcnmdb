@@ -1,16 +1,15 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 from datetime import datetime
-
 from werkzeug import cached_property
-
 from .db import db
 from ..uploads import uploaded_avatars
 
-from base import BaseMixin, ByMixin
+from base import BaseMixin
 from acl import ACLSubjectRef, ACLObjectRef
 
 from flask.ext.security import UserMixin, RoleMixin
+from flask.ext.sqlalchemy import BaseQuery
 
 USERFAVOURITESTORE_READ  = 'userfavouritestore_read'
 USERFAVOURITESTORE_WRITE = 'userfavouritestore_write'
@@ -148,6 +147,13 @@ class User(db.Model, UserMixin, BaseMixin, ACLSubjectRef):
         return "<%s>" % self
 
 
+
+class QueryPermission(BaseQuery):
+    def __iter__(self):
+        print self
+        return super(QueryPermission, self).__iter__()
+
+
 class UserFavouriteStore(db.Model, BaseMixin, ACLObjectRef):
     """
     Таблица избранных магазинов для пользователя
@@ -157,3 +163,5 @@ class UserFavouriteStore(db.Model, BaseMixin, ACLObjectRef):
     user_id       = db.Column(db.Integer(), db.ForeignKey('users.id'))
     store_id      = db.Column(db.Integer(), db.ForeignKey('stores.id'))
     store         = db.relationship('Store', primaryjoin="Store.id==UserFavouriteStore.store_id")
+
+    query_class = QueryPermission
