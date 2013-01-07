@@ -1,9 +1,9 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-from datetime import datetime
-
 from .db import db
-from base import BaseMixin, ByMixin
+from base import BaseMixin
+from sqlalchemy.util import classproperty
+from sqlalchemy.orm.session import object_session
 
 
 class ACLSubject(db.Model, BaseMixin):
@@ -11,17 +11,19 @@ class ACLSubject(db.Model, BaseMixin):
     __tablename__ = 'acl_subjects'
 
     def may(self, verb, obj = None):
-	    session = object_session(self)
-	    verb = ACLVerb.get(session, verb)
-	    obj = ACLObject.get_object(obj)
+        session = object_session(self)
+        verb = ACLVerb.get(session, verb)
+        obj = ACLObject.get_object(obj)
 
-	    value = None
+        value = None
 
-	    for rule in session.query(ACLRule).filter_by(subj = self, verb = verb, obj = obj).all():
-		    if False == rule.value: return False
-		    elif True == rule.value: value = True
-		    else:
-			    assert('not reached')
+        for rule in session.query(ACLRule).filter_by(subj = self, verb = verb, obj = obj).all():
+            if False == rule.value:
+                return False
+            elif True == rule.value:
+                value = True
+            else:
+		        assert('not reached')
 
         return value
 
@@ -39,23 +41,23 @@ class ACLSubject(db.Model, BaseMixin):
 
 class ACLVerb(db.Model, BaseMixin):
 
-	__tablename__ = 'acl_verbs'
+    __tablename__ = 'acl_verbs'
 
     name = db.Column(db.String, unique = True)
 
-	def __init__(self, name):
-		self.name = name
+    def __init__(self, name):
+	    self.name = name
 
-	@staticmethod
-	def get_by_name(session, name):
-		session.flush()
-		verb = session.query(ACLVerb).filter_by(name = name).first()
+    @staticmethod
+    def get_by_name(session, name):
+        session.flush()
+        verb = session.query(ACLVerb).filter_by(name = name).first()
 
-		if not verb:
-			verb = ACLVerb(name)
-			session.add(verb)
-			session.flush()
-		return verb
+    	if not verb:
+    		verb = ACLVerb(name)
+    		session.add(verb)
+    		session.flush()
+    	return verb
 
 	@staticmethod
 	def get(session, name_or_verb):
@@ -77,11 +79,11 @@ class ACLObject(db.Model, BaseMixin):
 class ACLSubjectRef(object):
 	@classproperty
 	def _acl_subject_id(cls):
-		return Column(Integer, ForeignKey(ACLSubject.id))
+		return db.Column(db.Integer, db.ForeignKey(ACLSubject.id))
 
 	@classproperty
 	def _acl_subject(cls):
-		return relationship(ACLSubject)
+		return db.relationship(ACLSubject)
 
 	def init_acl(self):
 		if None == self._acl_subject:
@@ -102,7 +104,7 @@ class ACLObjectRef(object):
 
 	@classproperty
 	def _acl_object(cls):
-		return relationship(ACLObject)
+		return db.relationship(ACLObject)
 
 	def init_acl(self):
 		if None == self._acl_object:
@@ -110,8 +112,6 @@ class ACLObjectRef(object):
 
 class ACLRule(db.Model, BaseMixin):
     __tablename__ = 'acl_rules'
-
-    corporation_id = db.Column(db.Integer, db.ForeignKey('corporations.id')) # id ЮЛ
 
     subj_id = db.Column(db.Integer, db.ForeignKey('acl_subjects.id'))
     verb_id = db.Column(db.Integer, db.ForeignKey('acl_verbs.id'))

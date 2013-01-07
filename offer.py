@@ -4,14 +4,20 @@ from datetime import datetime
 
 from .db import db
 from base import BaseMixin, ByMixin
-
+from acl import ACLObjectRef
 
 OFFER_STATE_UNKNOWN = 0
 OFFER_STATE_OK      = 1
 OFFER_STATE_DELETE  = 2
 
+OFFER_READ  = 'offer_read'
+OFFER_WRITE = 'offer_write'
 
-class Offer(db.Model, BaseMixin, ByMixin):
+OFFER_PICTURE_READ  = 'offer_picture_read'
+OFFER_PICTURE_WRITE = 'offer_picture_write'
+
+
+class Offer(db.Model, BaseMixin, ByMixin, ACLObjectRef):
     """
     Таблица предложений
     """
@@ -110,7 +116,7 @@ class VolumeType(db.Model, BaseMixin):
         return "<%s>" % self
 
 
-class OfferPicture(db.Model, BaseMixin, ByMixin):
+class OfferPicture(db.Model, BaseMixin, ByMixin, ACLObjectRef):
     """
     Таблица изображений для предложений
     """

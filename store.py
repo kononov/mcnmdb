@@ -2,15 +2,27 @@
 # -*- coding: utf-8 -*-
 from .db import db
 from base import BaseMixin, ByMixin
-
+from acl import ACLObjectRef
 
 STORE_STATE_UNKNOWN = 0
 STORE_STATE_OK      = 1
 STORE_STATE_DELETE  = 2
 
+CORPORATION_READ  = 'corporation_read'
+CORPORATION_WRITE = 'corporation_write'
+
+STORE_READ  = 'store_read'
+STORE_WRITE = 'store_write'
+
+STORE_GROUP_READ  = 'store_group_read'
+STORE_GROUP_WRITE = 'store_group_write'
+
+STORE_PICTURE_READ  = 'store_picture_read'
+STORE_PICTURE_WRITE = 'store_picture_write'
+
 
 #class Corporation(db.Model, BaseMixin, ByMixin):
-class Corporation(db.Model, BaseMixin):
+class Corporation(db.Model, BaseMixin, ACLObjectRef):
     """
     Таблица для ЮЛ магазинов
     """
@@ -45,7 +57,7 @@ groups_stores = db.Table('groups_stores',
     db.Column('group_id', db.Integer(), db.ForeignKey('storegroups.id')))
 
 
-class StoreGroup(db.Model, BaseMixin, ByMixin):
+class StoreGroup(db.Model, BaseMixin, ByMixin, ACLObjectRef):
     """
     Таблица групп магазинов
     """
@@ -63,7 +75,7 @@ class StoreGroup(db.Model, BaseMixin, ByMixin):
         return "<%s>" % self
 
 
-class Store(db.Model, BaseMixin, ByMixin):
+class Store(db.Model, BaseMixin, ByMixin, ACLObjectRef):
     """
     Таблица магазинов
     """
@@ -109,7 +121,7 @@ class Store(db.Model, BaseMixin, ByMixin):
 
 
 
-class StorePicture(db.Model, BaseMixin, ByMixin):
+class StorePicture(db.Model, BaseMixin, ByMixin, ACLObjectRef):
     """
     Таблица изображений магазинов
     """

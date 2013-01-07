@@ -4,7 +4,7 @@ from datetime import datetime
 
 from .db import db
 from base import BaseMixin, ByMixin
-
+from acl import ACLObjectRef
 
 TRANSACTION_TYPE_UNKNOWN = 0
 TRANSACTION_TYPE_DEBIT   = 1 # увеличение средств
@@ -22,8 +22,14 @@ TRANSACTION_STATE_OK      = 1
 TRANSACTION_STATE_DELETE  = 2
 TRANSACTION_STATE_STORN   = 11
 
+ACCOUNT_READ  = 'account_read'
+ACCOUNT_WRITE = 'account_write'
 
-class Account(db.Model, BaseMixin, ByMixin):
+TRANSACTION_READ  = 'transaction_read'
+TRANSACTION_WRITE = 'transaction_write'
+
+
+class Account(db.Model, BaseMixin, ByMixin, ACLObjectRef):
     """
     Таблица счетов для учета средств магазинов
     """
@@ -39,7 +45,7 @@ class Account(db.Model, BaseMixin, ByMixin):
                      )
 
 
-class Transaction(db.Model, BaseMixin, ByMixin):
+class Transaction(db.Model, BaseMixin, ByMixin, ACLObjectRef):
     """
     Таблица траназакций по счетам
     """

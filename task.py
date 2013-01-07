@@ -4,6 +4,7 @@ from datetime import datetime
 
 from .db import db
 from base import BaseMixin, ByMixin
+from acl import ACLObjectRef
 
 TASK_TYPE_UNKNOWN    = 0
 TASK_TYPE_OFFER_LOAD = 1
@@ -20,8 +21,14 @@ TASK_ITEM_STATE_UNKNOWN  = 0
 TASK_ITEM_STATE_OK       = 1
 TASK_ITEM_STATE_ERROR    = 2
 
+TASK_READ  = 'task_read'
+TASK_WRITE = 'task_write'
 
-class Task(db.Model, BaseMixin, ByMixin):
+TASK_ITEM_READ  = 'task_item_read'
+TASK_ITEM_WRITE = 'task_item_write'
+
+
+class Task(db.Model, BaseMixin, ByMixin, ACLObjectRef):
     """
     Таблица заданий
     """
@@ -38,7 +45,7 @@ class Task(db.Model, BaseMixin, ByMixin):
     items = db.relationship('TaskItem', primaryjoin="TaskItem.task_id==Task.id", backref=db.backref('task'))
 
 
-class TaskItem(db.Model, BaseMixin, ByMixin):
+class TaskItem(db.Model, BaseMixin, ByMixin, ACLObjectRef):
     """
     Таблица элементов заданий
     """

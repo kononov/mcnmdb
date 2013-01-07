@@ -74,6 +74,14 @@ class CreateFixturesCommand(Command):
         save_models(roles)
         print '---------------------------------------------------'
 
+        # Создаем группы
+        groups = []
+        for group in data.user_groups:
+            groups.append(Group(name=group))
+            print 'OK! - Group "%s" created successfully.' % group
+        save_models(groups)
+        print '---------------------------------------------------'
+
         # Заполняем справочник типов транзакций
         trn_types = []
         for trn_type in data.transactions_types:

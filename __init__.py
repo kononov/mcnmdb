@@ -1,7 +1,7 @@
 from db import db
 from account import Account, Transaction, TransactionType, AccountState, TransactionState
 from offer import Offer, Measure, OfferPicture, OfferState, WeightType, VolumeType
-from settings import ShoppingListSettings, UserSettings, UserOption, ListOption
+from settings import ShoppingListSetting, UserSetting, UserOption, ListOption
 from shoplist import ShoppingListItem, ShoppingList
 from store import Corporation, Store, StoreGroup, StorePicture, StoreState
 from task import Task, TaskItem, TaskState, TaskItemState, TaskType

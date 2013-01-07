@@ -8,6 +8,14 @@ user_roles = (
                (u'customer'),   # покупатель
              )
 
+# Группы полезователей
+user_groups = (
+                (u'anonymous'),  # pseudo-group
+                (u'registered'), # pseudo-group
+                (u'admins'),     # админы
+                (u'customers'),  # покупатели
+              )
+
 # Cправочник пользовательских опций
 user_options = (
                  (1, u'Определять местоположение'),

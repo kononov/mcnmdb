@@ -4,8 +4,15 @@ from datetime import datetime
 
 from .db import db
 from base import BaseMixin, ByMixin
+from acl import ACLObjectRef
 
-class ShoppingListItem(db.Model, BaseMixin, ByMixin):
+SHOPPINGLIST_READ  = 'shoppinglist_read'
+SHOPPINGLIST_WRITE = 'shoppinglist_write'
+
+SHOPPINGLIST_ITEM_READ  = 'shoppinglist_item_read'
+SHOPPINGLIST_ITEM_WRITE = 'shoppinglist_item_write'
+
+class ShoppingListItem(db.Model, BaseMixin, ByMixin, ACLObjectRef):
     __tablename__ = 'list_items'
 
     list_id   = db.Column(db.Integer, db.ForeignKey('lists.id'))
@@ -26,7 +33,7 @@ class ShoppingListItem(db.Model, BaseMixin, ByMixin):
     def __repr__(self):
         return "<%s>" % self
 
-class ShoppingList(db.Model, BaseMixin, ByMixin):
+class ShoppingList(db.Model, BaseMixin, ByMixin, ACLObjectRef):
     __tablename__ = 'lists'
 
     name        = db.Column(db.String(255), nullable=False)
@@ -37,7 +44,7 @@ class ShoppingList(db.Model, BaseMixin, ByMixin):
     items       = db.relationship('ShoppingListItem', primaryjoin="ShoppingListItem.list_id==ShoppingList.id", backref=db.backref('list'))
 
     # настройки списка
-    settings    = db.relationship('ShoppingListSettings', primaryjoin="ShoppingListSettings.list_id==ShoppingList.id", backref=db.backref('list'))
+    settings    = db.relationship('ShoppingListSetting', primaryjoin="ShoppingListSetting.list_id==ShoppingList.id", backref=db.backref('list'))
 
     __table_args__ = (
                        db.Index("idx_lists_store_id", "user_id"),

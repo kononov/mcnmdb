@@ -8,6 +8,7 @@ from .db import db
 from ..uploads import uploaded_avatars
 
 from base import BaseMixin, ByMixin
+from acl import ACLSubjectRef
 
 from flask.ext.security import UserMixin, RoleMixin
 
@@ -42,7 +43,7 @@ class Role(db.Model, RoleMixin, BaseMixin):
         return "<%s>" % self
 
 
-class Group(db.Model, BaseMixin):
+class Group(db.Model, BaseMixin, ACLSubjectRef):
     """
     Таблица групп пользователей
     """
@@ -61,7 +62,7 @@ class Group(db.Model, BaseMixin):
         return "<%s>" % self
 
 
-class User(db.Model, UserMixin, BaseMixin):
+class User(db.Model, UserMixin, BaseMixin, ACLSubjectRef):
     """
     Таблица пользоватлей
     """
@@ -90,7 +91,7 @@ class User(db.Model, UserMixin, BaseMixin):
     corporation      = db.relationship('Corporation')
 
     # настройки пользователя
-    settings         = db.relationship('UserSettings', primaryjoin="UserSettings.user_id==User.id", backref=db.backref('user'))
+    settings         = db.relationship('UserSetting', primaryjoin="UserSetting.user_id==User.id", backref=db.backref('user'))
     # список всех ролей данного пользователя
     roles            = db.relationship('Role', secondary=roles_users, backref = db.backref('users_with_this_role'))
     # список всех групп куда входит этот пользователь ролей

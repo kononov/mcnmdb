@@ -10,7 +10,7 @@ from sqlalchemy.orm import object_mapper
 from sqlalchemy.orm.session import object_session
 from sqlalchemy.orm.properties import RelationshipProperty as RelProperty
 
-from .db import db
+from db import db
 from flask.ext.restless.views import _get_relations, _to_dict
 
 

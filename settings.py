@@ -4,7 +4,7 @@ from datetime import datetime
 
 from .db import db
 from base import BaseMixin, ByMixin
-
+from acl import ACLObjectRef
 
 USEROPTION_GPS           = 1
 USEROPTION_PUBLISH_OFFER = 2
@@ -15,7 +15,13 @@ LISTOPTION_RADIUS_SEARCH    = 1
 LISTOPTION_PRIORITET_SEARCH = 2
 LISTOPTION_SORT_BY          = 3
 
-class UserSettings(db.Model, BaseMixin):
+USER_SETTING_READ  = 'user_setting_read'
+USER_SETTING_WRITE = 'user_setting_write'
+
+SHOPPINGLIST_SETTING_READ  = 'shoppinglist_setting_read'
+SHOPPINGLIST_SETTING_WRITE = 'shoppinglist_setting_write'
+
+class UserSetting(db.Model, BaseMixin, ACLObjectRef):
     """
     Таблица значений настроек пользователя
     """
@@ -31,7 +37,7 @@ class UserSettings(db.Model, BaseMixin):
     boolvalue   = db.Column(db.Boolean)        #
 
 
-class ShoppingListSettings(db.Model, BaseMixin):
+class ShoppingListSetting(db.Model, BaseMixin, ACLObjectRef):
     """
     Таблица значений настроек списков
     """
@@ -56,7 +62,7 @@ class UserOption(db.Model, BaseMixin):
     description = db.Column(db.Unicode(1000))
 
     # настройки пользователя
-    settings    = db.relationship('UserSettings', primaryjoin="UserSettings.option_id==UserOption.id", backref=db.backref('option'))
+    settings    = db.relationship('UserSetting', primaryjoin="UserSetting.option_id==UserOption.id", backref=db.backref('option'))
 
     def __str__(self):
         return self.description
@@ -74,7 +80,7 @@ class ListOption(db.Model, BaseMixin):
     description = db.Column(db.Unicode(1000))
 
     # настройки списка
-    settings    = db.relationship('ShoppingListSettings', primaryjoin="ShoppingListSettings.option_id==ListOption.id", backref=db.backref('option'))
+    settings    = db.relationship('ShoppingListSetting', primaryjoin="ShoppingListSetting.option_id==ListOption.id", backref=db.backref('option'))
 
     def __str__(self):
         return self.description
