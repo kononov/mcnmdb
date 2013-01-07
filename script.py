@@ -227,15 +227,16 @@ class CreateFixturesCommand(Command):
 
 
         # Рандомно добавляем покупателям избранные магазины, по 20 штук
-        f_favstores = []
         for u in filter(lambda u: "customer" in u[2], user.users):
             for i in range(20):
                 usr = User.query.filter_by(email=u[0]).first()
-                f_favstores.append(UserFavouriteStore(user_id=usr.id, store_id=randint(1,len(f_stores))))
+                obj = UserFavouriteStore(user_id=usr.id, store_id=randint(1,len(f_stores)))
+                save_model(obj)
+                usr.permit(verb=USERFAVOURITESTORE_READ, obj=obj)
+                usr.permit(verb=USERFAVOURITESTORE_WRITE, obj=obj)
                 print "OK! - Store successfully added to user's (%s) favorites." % u[0]
-        save_models(f_favstores)
-        print '---------------------------------------------------'
 
+        print '---------------------------------------------------'
 
         # Создаем предложения
         f_offers = []

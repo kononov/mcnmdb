@@ -12,6 +12,8 @@ from acl import ACLSubjectRef, ACLObjectRef
 
 from flask.ext.security import UserMixin, RoleMixin
 
+USERFAVOURITESTORE_READ  = 'userfavouritestore_read'
+USERFAVOURITESTORE_WRITE = 'userfavouritestore_write'
 
 roles_users = db.Table('roles_users',
     db.Column('user_id', db.Integer(), db.ForeignKey('users.id')),
